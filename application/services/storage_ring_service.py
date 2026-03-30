@@ -13,14 +13,33 @@ from ...domain.models.item import StorageRing
 class StorageRingService:
     """储物戒业务服务"""
     
-    # 物品分类定义
+    # 物品分类定义 - 按类型关键词分类
     ITEM_CATEGORIES = {
-        "材料": ["灵草", "精铁", "玄铁", "星辰石", "灵石碎片", "灵兽毛皮", "灵兽内丹",
-                 "妖兽精血", "功法残页", "秘境精华", "天材地宝", "混沌精华", "神兽之骨",
-                 "远古秘籍", "仙器碎片"],
-        "装备": ["武器", "防具", "法器"],
-        "功法": ["心法", "技能"],
-        "其他": []
+        "丹药": {
+            "keywords": ["丹"],
+            "priority": 1
+        },
+        "材料": {
+            "keywords": ["草", "铁", "石", "沙", "参", "芝", "果", "花", "根", "子", "髓", "核", "粉", "砂",
+                        "皮", "血", "息", "齿轮", "碎片", "精华", "残页", "遗物", "种子"],
+            "priority": 2
+        },
+        "法器": {
+            "keywords": ["剑", "刀", "枪", "弓", "幡", "甲", "袍", "铠", "阵"],
+            "priority": 3
+        },
+        "功法": {
+            "keywords": ["功", "诀", "经", "法"],
+            "priority": 4
+        },
+        "储物戒": {
+            "keywords": ["储物戒"],
+            "priority": 5
+        },
+        "其他": {
+            "keywords": [],
+            "priority": 99
+        }
     }
     
     def __init__(
@@ -92,8 +111,8 @@ class StorageRingService:
     
     def can_store_item(self, item_name: str) -> Tuple[bool, str]:
         """检查物品是否可以存入储物戒"""
-        # 检查是否为储物戒
-        if item_name in self.storage_rings:
+        # 检查是否为储物戒（储物戒不能存入储物戒）
+        if "储物戒" in item_name or item_name in self.storage_rings:
             return False, f"【{item_name}】是储物戒，不能存入另一个储物戒"
         
         return True, ""
@@ -214,29 +233,47 @@ class StorageRingService:
         }
     
     def categorize_items(self, items: Dict[str, int]) -> Dict[str, List[Tuple[str, int]]]:
-        """将物品按分类整理"""
+        """将物品按分类整理（优化版）"""
         result = {cat: [] for cat in self.ITEM_CATEGORIES.keys()}
         
         for item_name, count in items.items():
             categorized = False
-            for category, keywords in self.ITEM_CATEGORIES.items():
+            best_match = None
+            best_priority = 999
+            
+            # 遍历所有分类，找到最佳匹配
+            for category, config in self.ITEM_CATEGORIES.items():
                 if category == "其他":
                     continue
+                
+                keywords = config["keywords"]
+                priority = config["priority"]
+                
                 # 检查物品名是否包含分类关键词
                 for keyword in keywords:
-                    if keyword in item_name or item_name in keyword:
-                        result[category].append((item_name, count))
-                        categorized = True
+                    if keyword in item_name:
+                        # 找到优先级更高的分类（数字越小优先级越高）
+                        if priority < best_priority:
+                            best_match = category
+                            best_priority = priority
+                            categorized = True
                         break
-                if categorized:
-                    break
             
-            # 未分类的放入"其他"
-            if not categorized:
+            # 将物品添加到最佳匹配的分类
+            if categorized and best_match:
+                result[best_match].append((item_name, count))
+            else:
+                # 未分类的放入"其他"
                 result["其他"].append((item_name, count))
         
-        # 移除空分类
-        return {k: v for k, v in result.items() if v}
+        # 移除空分类，并按优先级排序
+        sorted_result = {}
+        for category in sorted(self.ITEM_CATEGORIES.keys(), 
+                              key=lambda x: self.ITEM_CATEGORIES[x]["priority"]):
+            if result[category]:
+                sorted_result[category] = result[category]
+        
+        return sorted_result
     
     async def upgrade_ring(
         self,
