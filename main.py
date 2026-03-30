@@ -12,7 +12,7 @@ from .core.config import ConfigManager
     "astrbot_plugin_monixiuxianv3",
     "EtafCisky",
     "基于清晰架构重构的修仙模拟游戏插件",
-    "3.6.0"
+    "3.7.0"
 )
 class XiuxianV3Plugin(Star):
     """修仙插件 V3 - 清晰架构版本"""
@@ -130,6 +130,7 @@ class XiuxianV3Plugin(Star):
         from .presentation.handlers.dual_cultivation_handler import DualCultivationHandler
         from .presentation.handlers.impart_handler import ImpartHandler
         from .presentation.handlers.ranking_handler import RankingHandler
+        from .presentation.handlers.market_handler import MarketHandler
         
         spirit_root_gen = SpiritRootGenerator(self.config_manager)
         
@@ -209,6 +210,10 @@ class XiuxianV3Plugin(Star):
         self.ranking_handler = RankingHandler(
             self.container.ranking_service(),
             self.container.player_repository()
+        )
+        self.market_handler = MarketHandler(
+            self.container.market_service(),
+            self.container.player_service()
         )
     
     async def initialize(self):
@@ -546,8 +551,47 @@ class XiuxianV3Plugin(Star):
     
     @filter.command(Commands.BUY)
     async def cmd_buy(self, event: AstrMessageEvent, args: str = ""):
-        """购买"""
-        async for result in self.shop_handler.handle_buy(event, args):
+        """购买（商店或市场）"""
+        # 如果参数看起来像UUID（包含字母和数字的混合），则是市场购买
+        # 否则是商店购买
+        if args and any(c.isalpha() for c in args) and any(c.isdigit() for c in args) and len(args) >= 8:
+            # 市场购买
+            async for result in self.market_handler.handle_buy_item(event, args):
+                yield result
+        else:
+            # 商店购买
+            async for result in self.shop_handler.handle_buy(event, args):
+                yield result
+    
+    # ===== 市场系统命令 =====
+    
+    @filter.command(Commands.MARKET)
+    @filter.command(Commands.VIEW_MARKET)
+    async def cmd_view_market(self, event: AstrMessageEvent):
+        """查看市场"""
+        async for result in self.market_handler.handle_view_market(event):
+            yield result
+    
+    @filter.command(Commands.LIST_ITEM)
+    async def cmd_list_item(self, event: AstrMessageEvent, args: str = ""):
+        """市场上架"""
+        # 解析参数：物品名称 价格
+        parts = args.split(maxsplit=1)
+        if len(parts) < 2:
+            async for result in self.market_handler.handle_list_item(event, "", ""):
+                yield result
+            return
+        
+        item_name = parts[0]
+        price = parts[1] if len(parts) > 1 else ""
+        
+        async for result in self.market_handler.handle_list_item(event, item_name, price):
+            yield result
+    
+    @filter.command(Commands.UNLIST_ITEM)
+    async def cmd_unlist_item(self, event: AstrMessageEvent, listing_id: str = ""):
+        """市场下架"""
+        async for result in self.market_handler.handle_unlist_item(event, listing_id):
             yield result
     
     # ===== 宗门系统命令 =====

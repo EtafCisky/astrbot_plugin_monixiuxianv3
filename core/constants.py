@@ -59,6 +59,13 @@ class Commands:
     TREASURE_PAVILION = "百宝阁"
     BUY = "购买"
     
+    # 市场系统
+    MARKET = "市场"
+    VIEW_MARKET = "查看市场"
+    LIST_ITEM = "市场上架"
+    BUY_MARKET_ITEM = "购买"
+    UNLIST_ITEM = "市场下架"
+    
     # 宗门系统
     CREATE_SECT = "创建宗门"
     JOIN_SECT = "加入宗门"

@@ -158,6 +158,12 @@ class Container:
         storage = self.json_storage()
         return ImpartRepository(storage)
     
+    def market_repository(self):
+        """获取市场仓储"""
+        from ..infrastructure.repositories.market_repo import MarketRepository
+        storage = self.json_storage()
+        return MarketRepository(storage)
+    
     # 工具类工厂方法
     def spirit_root_generator(self):
         """获取灵根生成器"""
@@ -358,6 +364,17 @@ class Container:
             self.player_repository(),
             self.sect_repository(),
             self.bank_repository(),
+            self.config_manager()
+        )
+    
+    def market_service(self):
+        """获取市场服务"""
+        from ..application.services.market_service import MarketService
+        return MarketService(
+            self.market_repository(),
+            self.player_repository(),
+            self.storage_ring_repository(),
+            self.storage_ring_service(),
             self.config_manager()
         )
     
