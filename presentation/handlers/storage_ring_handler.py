@@ -43,10 +43,19 @@ class StorageRingHandler:
                 if cat_items:
                     lines.append(f"【{category}】\n")
                     for item_name, count in cat_items:
+                        # 获取参考价格
+                        ref_price = self.storage_ring_service.get_reference_price(item_name)
+                        
                         if count > 1:
-                            lines.append(f"  · {item_name}×{count}\n")
+                            if ref_price:
+                                lines.append(f"  · {item_name}×{count} (参考价:{ref_price})\n")
+                            else:
+                                lines.append(f"  · {item_name}×{count}\n")
                         else:
-                            lines.append(f"  · {item_name}\n")
+                            if ref_price:
+                                lines.append(f"  · {item_name} (参考价:{ref_price})\n")
+                            else:
+                                lines.append(f"  · {item_name}\n")
         else:
             lines.append("【存储物品】空\n")
         
@@ -281,7 +290,12 @@ class StorageRingHandler:
         
         lines = [f"=== 搜索结果：{keyword} ===\n"]
         for item_name, count in matched:
-            lines.append(f"  · {item_name}×{count}\n")
+            # 获取参考价格
+            ref_price = self.storage_ring_service.get_reference_price(item_name)
+            if ref_price:
+                lines.append(f"  · {item_name}×{count} (参考价:{ref_price})\n")
+            else:
+                lines.append(f"  · {item_name}×{count}\n")
         lines.append(f"\n共找到 {len(matched)} 种物品")
         
         yield event.plain_result("".join(lines))

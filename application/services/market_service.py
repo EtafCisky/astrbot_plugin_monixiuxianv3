@@ -307,7 +307,10 @@ class MarketService:
             配置数据，加载失败返回None
         """
         try:
-            config_path = Path("xiuxian_v3/config") / filename
+            # 尝试从配置管理器获取配置目录
+            config_dir = self.config_manager.config_dir
+            config_path = config_dir / filename
+            
             if not config_path.exists():
                 return None
             

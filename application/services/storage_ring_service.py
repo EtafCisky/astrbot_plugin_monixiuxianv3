@@ -374,3 +374,66 @@ class StorageRingService:
             # 存入失败，物品返还给发送者
             await self.store_item(sender_id, item_name, count, silent=True)
             return False, f"赠予失败：{message}\n物品已返还"
+
+    def get_reference_price(self, item_name: str) -> Optional[int]:
+        """
+        获取物品参考价格
+        
+        Args:
+            item_name: 物品名称
+            
+        Returns:
+            参考价格，如果没有则返回None
+        """
+        # 从丹药配置获取
+        pills_config = self._load_config("pills.json")
+        if pills_config:
+            for pill in pills_config:
+                if pill.get("name") == item_name:
+                    if "price" in pill:
+                        return pill["price"]
+                    if "gold_cost" in pill:
+                        return pill["gold_cost"]
+        
+        # 从武器配置获取
+        weapons_config = self._load_config("weapons.json")
+        if weapons_config:
+            for weapon in weapons_config:
+                if weapon.get("name") == item_name:
+                    if "price" in weapon:
+                        return weapon["price"]
+                    if "gold_cost" in weapon:
+                        return weapon["gold_cost"]
+        
+        # 从通用物品配置获取
+        items_config = self._load_config("items.json")
+        if items_config:
+            if isinstance(items_config, dict):
+                for item_id, item_data in items_config.items():
+                    if item_data.get("name") == item_name:
+                        if "price" in item_data:
+                            return item_data["price"]
+                        if "gold_cost" in item_data:
+                            return item_data["gold_cost"]
+        
+        return None
+    
+    def _load_config(self, filename: str) -> Optional[any]:
+        """
+        加载配置文件
+        
+        Args:
+            filename: 配置文件名
+            
+        Returns:
+            配置数据，加载失败返回None
+        """
+        try:
+            config_path = self.config_manager.config_dir / filename
+            if not config_path.exists():
+                return None
+            
+            with open(config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return None
