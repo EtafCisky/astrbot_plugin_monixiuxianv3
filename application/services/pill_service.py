@@ -174,9 +174,9 @@ class PillService:
         # 检查境界需求
         required_level = pill_config.get("required_level_index", 0)
         if player.level_index < required_level:
-            level_name = player.get_level_name()
+            # 简单显示等级索引，避免依赖额外的服务
             raise BusinessException(
-                f"境界不足！使用【{pill_name}】需要达到境界{required_level}（当前：{level_name}）"
+                f"境界不足！使用【{pill_name}】需要达到境界等级{required_level}（当前：境界等级{player.level_index}）"
             )
         
         # 根据丹药类型处理效果

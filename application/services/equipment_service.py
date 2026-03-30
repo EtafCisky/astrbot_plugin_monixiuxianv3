@@ -91,8 +91,8 @@ class EquipmentService:
         
         # 检查等级要求
         if player.level_index < equipment.required_level_index:
-            level_name = player.get_level_name()
-            raise BusinessException(f"你的境界不足，需要达到{equipment.required_level_index}级才能装备{item_name}（当前：{level_name}）")
+            # 简单显示等级索引，避免依赖配置管理器
+            raise BusinessException(f"你的境界不足，需要达到境界等级{equipment.required_level_index}才能装备{item_name}（当前：境界等级{player.level_index}）")
         
         # 确定装备槽位
         slot = self._determine_slot(equipment)
