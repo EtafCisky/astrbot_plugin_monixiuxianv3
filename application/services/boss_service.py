@@ -44,8 +44,7 @@ class BossService:
         "mid": [  # 中级Boss (元婴-化神)
             {"name": "灵兽内丹", "weight": 30, "min": 2, "max": 4},
             {"name": "星辰石", "weight": 25, "min": 2, "max": 4},
-            {"name": "天材地宝", "weight": 20, "min": 1, "max": 2},
-            {"name": "功法残页", "weight": 25, "min": 1, "max": 2},
+            {"name": "天材地宝", "weight": 45, "min": 1, "max": 2},
         ],
         "high": [  # 高级Boss (炼虚及以上)
             {"name": "天材地宝", "weight": 30, "min": 2, "max": 4},
@@ -335,3 +334,4 @@ class BossService:
                         break
         
         return dropped_items
+

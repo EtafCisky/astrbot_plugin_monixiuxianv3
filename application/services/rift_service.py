@@ -24,21 +24,21 @@ class RiftService:
         1: [  # 低级秘境
             {"name": "灵草", "weight": 40, "min": 2, "max": 5},
             {"name": "精铁", "weight": 30, "min": 1, "max": 3},
-            {"name": "灵石碎片", "weight": 30, "min": 3, "max": 8},
+            {"name": "灵石碎片", "weight": 20, "min": 3, "max": 8},
+            {"name": "稀有掉落", "weight": 10, "min": 1, "max": 1},  # 这是类别，会触发二级掉落
         ],
         2: [  # 中级秘境
             {"name": "灵草", "weight": 30, "min": 3, "max": 7},
             {"name": "玄铁", "weight": 25, "min": 2, "max": 4},
             {"name": "灵兽毛皮", "weight": 20, "min": 1, "max": 3},
-            {"name": "功法残页", "weight": 15, "min": 1, "max": 1},
             {"name": "秘境精华", "weight": 10, "min": 1, "max": 2},
+            {"name": "稀有掉落", "weight": 15, "min": 1, "max": 1},  # 这是类别，会触发二级掉落
         ],
         3: [  # 高级秘境
             {"name": "玄铁", "weight": 25, "min": 3, "max": 6},
             {"name": "星辰石", "weight": 20, "min": 2, "max": 4},
             {"name": "灵兽内丹", "weight": 20, "min": 1, "max": 2},
-            {"name": "功法残页", "weight": 20, "min": 1, "max": 2},
-            {"name": "稀有掉落", "weight": 15, "min": 1, "max": 1},  # 这是类别，会触发二级掉落
+            {"name": "稀有掉落", "weight": 35, "min": 1, "max": 1},  # 这是类别，会触发二级掉落（增加权重）
         ],
     }
     
