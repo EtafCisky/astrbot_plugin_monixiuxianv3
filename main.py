@@ -211,10 +211,17 @@ class XiuxianV3Plugin(Star):
             self.container.ranking_service(),
             self.container.player_repository()
         )
-        self.market_handler = MarketHandler(
-            self.container.market_service(),
-            self.container.player_service()
-        )
+        
+        # 初始化市场处理器
+        try:
+            self.market_handler = MarketHandler(
+                self.container.market_service(),
+                self.container.player_service()
+            )
+            logger.info("【修仙V3】市场处理器初始化成功")
+        except Exception as e:
+            logger.error(f"【修仙V3】市场处理器初始化失败: {e}", exc_info=True)
+            raise
     
     async def initialize(self):
         """插件启动"""
@@ -576,14 +583,14 @@ class XiuxianV3Plugin(Star):
     async def cmd_list_item(self, event: AstrMessageEvent, args: str = ""):
         """市场上架"""
         # 解析参数：物品名称 价格
-        parts = args.split(maxsplit=1)
+        parts = args.split()
         if len(parts) < 2:
             async for result in self.market_handler.handle_list_item(event, "", ""):
                 yield result
             return
         
         item_name = parts[0]
-        price = parts[1] if len(parts) > 1 else ""
+        price = parts[1]
         
         async for result in self.market_handler.handle_list_item(event, item_name, price):
             yield result
