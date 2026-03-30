@@ -173,7 +173,7 @@ class PlayerRepository(BaseRepository[Player]):
     
     def add_pill(self, user_id: str, pill_name: str, count: int) -> None:
         """
-        增加玩家丹药（便捷方法）
+        增加玩家丹药（已废弃，现在添加到储物戒）
         
         Args:
             user_id: 用户ID
@@ -184,11 +184,11 @@ class PlayerRepository(BaseRepository[Player]):
         if not player:
             raise ValueError(f"玩家不存在: {user_id}")
         
-        # 更新丹药背包
-        if pill_name in player.pills_inventory:
-            player.pills_inventory[pill_name] += count
+        # 添加到储物戒而不是丹药背包
+        if pill_name in player.storage_ring_items:
+            player.storage_ring_items[pill_name] += count
         else:
-            player.pills_inventory[pill_name] = count
+            player.storage_ring_items[pill_name] = count
         
         player.updated_at = int(time.time())
         self.save(player)

@@ -185,10 +185,14 @@ class PillService:
         # 应用丹药效果
         message = self._apply_pill_effects(player, pill_name, pill_config)
         
-        # 从储物戒扣除丹药
-        self.storage_ring_repo.remove_item(user_id, pill_name, 1)
+        # 从储物戒扣除丹药（直接修改player对象）
+        if pill_name in player.storage_ring_items:
+            if player.storage_ring_items[pill_name] <= 1:
+                del player.storage_ring_items[pill_name]
+            else:
+                player.storage_ring_items[pill_name] -= 1
         
-        # 保存玩家数据
+        # 保存玩家数据（包括储物戒的修改）
         self.player_repo.save(player)
         
         return True, message

@@ -154,8 +154,8 @@ class AlchemyService:
         }
         
         if is_success:
-            # 炼丹成功，添加丹药到丹药背包
-            self.player_repo.add_pill(user_id, recipe.name, 1)
+            # 炼丹成功，添加丹药到储物戒
+            self.storage_ring_repo.add_item(user_id, recipe.name, 1)
             
             level_up_msg = ""
             if level_up:

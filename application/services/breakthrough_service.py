@@ -130,6 +130,18 @@ class BreakthroughService:
         if not can_breakthrough:
             raise ValueError(error_msg)
         
+        # 如果使用了破境丹，先检查并扣除
+        if pill_name:
+            # 检查储物戒中是否有该丹药
+            if pill_name not in player.storage_ring_items or player.storage_ring_items[pill_name] < 1:
+                raise ValueError(f"储物戒中没有【{pill_name}】！")
+            
+            # 扣除丹药
+            if player.storage_ring_items[pill_name] <= 1:
+                del player.storage_ring_items[pill_name]
+            else:
+                player.storage_ring_items[pill_name] -= 1
+        
         # 获取境界配置
         level_data = self._get_level_data(player)
         
@@ -265,20 +277,42 @@ class BreakthroughService:
         # 如果使用了破境丹，添加丹药加成
         if pill_name:
             pills_config = self.config_manager.get_config("pills")
-            if pills_config and isinstance(pills_config, list):
-                for pill_data in pills_config:
-                    if pill_data.get("name") == pill_name and pill_data.get("subtype") == "breakthrough":
-                        pill_bonus = pill_data.get("breakthrough_bonus", 0)
-                        pill_max_rate = pill_data.get("max_success_rate", 1.0)
-                        
-                        if pill_bonus > 0:
-                            final_rate += pill_bonus
-                            info_lines.append(f"使用【{pill_name}】：+{pill_bonus:.1%}")
-                        
-                        # 更新最大成功率限制
-                        max_rate = pill_max_rate
-                        info_lines.append(f"最大成功率：{max_rate:.1%}")
-                        break
+            pill_found = False
+            
+            # pills_config 可能是字典或列表
+            if pills_config:
+                if isinstance(pills_config, dict):
+                    # 如果是字典，遍历所有值
+                    for pill_data in pills_config.values():
+                        if isinstance(pill_data, dict) and pill_data.get("name") == pill_name and pill_data.get("subtype") == "breakthrough":
+                            pill_bonus = pill_data.get("breakthrough_bonus", 0)
+                            pill_max_rate = pill_data.get("max_success_rate", 1.0)
+                            
+                            if pill_bonus > 0:
+                                final_rate += pill_bonus
+                                info_lines.append(f"使用【{pill_name}】：+{pill_bonus:.1%}")
+                            
+                            # 更新最大成功率限制
+                            max_rate = pill_max_rate
+                            info_lines.append(f"最大成功率：{max_rate:.1%}")
+                            pill_found = True
+                            break
+                elif isinstance(pills_config, list):
+                    # 如果是列表，直接遍历
+                    for pill_data in pills_config:
+                        if pill_data.get("name") == pill_name and pill_data.get("subtype") == "breakthrough":
+                            pill_bonus = pill_data.get("breakthrough_bonus", 0)
+                            pill_max_rate = pill_data.get("max_success_rate", 1.0)
+                            
+                            if pill_bonus > 0:
+                                final_rate += pill_bonus
+                                info_lines.append(f"使用【{pill_name}】：+{pill_bonus:.1%}")
+                            
+                            # 更新最大成功率限制
+                            max_rate = pill_max_rate
+                            info_lines.append(f"最大成功率：{max_rate:.1%}")
+                            pill_found = True
+                            break
         
         final_rate = max(0.0, min(final_rate, max_rate))
         info_lines.append(f"最终成功率：{final_rate:.1%}")
