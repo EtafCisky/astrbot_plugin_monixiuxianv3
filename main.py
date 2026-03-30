@@ -211,17 +211,10 @@ class XiuxianV3Plugin(Star):
             self.container.ranking_service(),
             self.container.player_repository()
         )
-        
-        # 初始化市场处理器
-        try:
-            self.market_handler = MarketHandler(
-                self.container.market_service(),
-                self.container.player_service()
-            )
-            logger.info("【修仙V3】市场处理器初始化成功")
-        except Exception as e:
-            logger.error(f"【修仙V3】市场处理器初始化失败: {e}", exc_info=True)
-            raise
+        self.market_handler = MarketHandler(
+            self.container.market_service(),
+            self.container.player_service()
+        )
     
     async def initialize(self):
         """插件启动"""
@@ -573,8 +566,13 @@ class XiuxianV3Plugin(Star):
     # ===== 市场系统命令 =====
     
     @filter.command(Commands.MARKET)
+    async def cmd_market(self, event: AstrMessageEvent):
+        """市场"""
+        async for result in self.market_handler.handle_view_market(event):
+            yield result
+    
     @filter.command(Commands.VIEW_MARKET)
-    async def cmd_view_market(self, event: AstrMessageEvent):
+    async def cmd_view_market_alias(self, event: AstrMessageEvent):
         """查看市场"""
         async for result in self.market_handler.handle_view_market(event):
             yield result
