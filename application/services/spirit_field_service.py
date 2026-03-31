@@ -50,7 +50,7 @@ class SpiritFieldService:
                 # 检查是否为药草（根据名称特征判断）
                 name = item_data.get("name", "")
                 # 药草通常包含这些字：草、芝、参、花、根、子、果、莲、藤等
-                herb_keywords = ["草", "芝", "参", "花", "根", "子", "果", "莲", "藤", "叶", "药"]
+                herb_keywords = ["草", "芝", "参", "花", "根", "子", "果", "莲", "藤", "叶", "药", "精", "皮", "荷", "杞", "楂", "梗", "芍", "芎", "风", "芥", "翘", "英", "夏", "术", "芪", "归", "苓"]
                 if any(keyword in name for keyword in herb_keywords):
                     self.plantable_herbs[name] = {
                         "id": item_id,
