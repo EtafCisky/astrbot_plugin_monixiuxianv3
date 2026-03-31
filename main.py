@@ -651,6 +651,12 @@ class XiuxianV3Plugin(Star):
         async for result in self.spirit_field_handler.handle_field_status(event):
             yield result
     
+    @filter.command(Commands.CREATE_FARM)
+    async def cmd_create_farm(self, event: AstrMessageEvent):
+        """开垦灵田"""
+        async for result in self.spirit_field_handler.handle_field_status(event):
+            yield result
+    
     @filter.command(Commands.PLANT_HERB)
     async def cmd_plant_herb(self, event: AstrMessageEvent, herb_name: str = ""):
         """种植"""
