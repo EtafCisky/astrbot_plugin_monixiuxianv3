@@ -639,6 +639,18 @@ class XiuxianV3Plugin(Star):
         async for result in self.spirit_field_handler.handle_field_status(event):
             yield result
     
+    @filter.command(Commands.FARM_INFO_ALT2)
+    async def cmd_farm_info_alt2(self, event: AstrMessageEvent):
+        """灵田信息"""
+        async for result in self.spirit_field_handler.handle_field_status(event):
+            yield result
+    
+    @filter.command(Commands.FARM_INFO_ALT3)
+    async def cmd_farm_info_alt3(self, event: AstrMessageEvent):
+        """我的灵田"""
+        async for result in self.spirit_field_handler.handle_field_status(event):
+            yield result
+    
     @filter.command(Commands.PLANT_HERB)
     async def cmd_plant_herb(self, event: AstrMessageEvent, herb_name: str = ""):
         """种植"""

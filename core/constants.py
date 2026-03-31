@@ -120,6 +120,8 @@ class Commands:
     # 灵田系统（新种子-药草系统）
     FARM_INFO = "灵田"  # 需求 10.1: /灵田 或 /lingtian
     FARM_INFO_ALT = "lingtian"  # 需求 10.1: 备用命令
+    FARM_INFO_ALT2 = "灵田信息"  # 备用命令（与帮助文档一致）
+    FARM_INFO_ALT3 = "我的灵田"  # 备用命令（用户习惯）
     PLANT_HERB = "种植"  # 需求 10.2: /种植 [药草名称]
     HARVEST = "收获"  # 需求 10.3: /收获
     UPGRADE_FARM = "灵田升级"  # 需求 10.5: /灵田升级
