@@ -65,6 +65,7 @@ class StorageRingHandler:
             lines.append(f"\n{warning}\n")
         
         lines.append(f"\n{'=' * 28}\n")
+        lines.append(f"查看：查看物品 物品名\n")
         lines.append(f"搜索：搜索物品 关键词\n")
         lines.append(f"升级：更换储物戒 储物戒名")
         

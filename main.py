@@ -38,11 +38,8 @@ class XiuxianV3Plugin(Star):
             astrbot_config = {}
             logger.warning("【修仙V3】未获取到配置，使用空字典")
         
-        # 初始化配置文件（返回是否需要清空商店数据）
-        self.need_clear_shop = self._initialize_config_files()
-        
-        # 初始化配置管理器
-        config_dir = self.data_dir / "config"
+        # 初始化配置管理器（直接从插件目录读取配置）
+        config_dir = Path(__file__).parent / "config"
         self.config_manager = ConfigManager(config_dir=config_dir, astrbot_config=astrbot_config)
         
         # 初始化依赖注入容器（传入配置管理器）
@@ -50,60 +47,6 @@ class XiuxianV3Plugin(Star):
         
         # 初始化所有 handlers
         self._setup_handlers()
-    
-    def _initialize_config_files(self):
-        """初始化配置文件（从插件目录复制到数据目录）"""
-        import shutil
-        from pathlib import Path
-        
-        # 源配置目录（插件安装目录）
-        source_config_dir = Path(__file__).parent / "config"
-        # 目标配置目录（数据目录）
-        target_config_dir = self.data_dir / "config"
-        target_config_dir.mkdir(parents=True, exist_ok=True)
-        
-        # 需要复制的配置文件列表
-        config_files = [
-            "level_config.json",
-            "body_level_config.json",
-            "items.json",
-            "weapons.json",
-            "pills.json",
-            "storage_rings.json",
-            "adventure_config.json",
-            "bounty_templates.json",
-            "alchemy_recipes.json"
-        ]
-        
-        # v3.4.10 版本：每次启动都强制更新 bounty_templates.json（确保悬赏时限配置生效）
-        always_update_files = ["bounty_templates.json"]
-        
-        # 复制配置文件
-        for config_file in config_files:
-            source_file = source_config_dir / config_file
-            target_file = target_config_dir / config_file
-            
-            # 判断是否需要复制
-            should_copy = False
-            if not target_file.exists():
-                # 目标文件不存在，必须复制
-                should_copy = True
-                logger.info(f"【修仙V3】初始化配置文件: {config_file}")
-            elif config_file in always_update_files:
-                # 每次启动都强制更新的文件
-                should_copy = True
-                logger.info(f"【修仙V3】强制更新配置文件: {config_file} (v3.4.10)")
-            
-            if should_copy and source_file.exists():
-                try:
-                    shutil.copy2(source_file, target_file)
-                    logger.info(f"【修仙V3】已复制配置文件: {config_file}")
-                except Exception as e:
-                    logger.error(f"【修仙V3】复制配置文件 {config_file} 失败: {e}")
-        
-        # 返回 False（不需要清空商店数据）
-        return False
-
     
     def _setup_handlers(self):
         """初始化所有命令处理器"""

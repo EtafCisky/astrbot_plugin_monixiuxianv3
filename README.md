@@ -4,7 +4,7 @@
   <img src="../monixiuxian2/logo.png" alt="修仙插件" width="200">
 </p>
 
-> **版本:** v3.8.0  
+> **版本:** v3.8.1  
 > **许可证:** AGPL-3.0  
 > **作者:** EtafCisky  
 > **架构:** Clean Architecture  
