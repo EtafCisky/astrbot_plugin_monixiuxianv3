@@ -176,10 +176,6 @@ class XiuxianV3Plugin(Star):
             # 数据目录已在 __init__ 中创建
             logger.info("【修仙V3】JSON 存储已就绪")
             
-            # 如果需要清空商店数据（版本更新时）
-            if self.need_clear_shop:
-                self._clear_shop_data()
-            
             # 初始化秘境数据
             self._initialize_rifts()
             
@@ -190,21 +186,6 @@ class XiuxianV3Plugin(Star):
         except Exception as e:
             logger.error(f"【修仙V3】插件启动失败: {e}", exc_info=True)
             raise  # 关键初始化失败应该中断启动
-    
-    def _clear_shop_data(self):
-        """清空商店数据（用于强制刷新商店）"""
-        try:
-            # 使用 JSON 存储，直接删除商店文件即可
-            shop_repo = self.container.shop_repository()
-            
-            # 获取所有商店并删除
-            all_shops = shop_repo.get_all()
-            for shop in all_shops:
-                shop_repo.delete(shop.shop_id)
-            
-            logger.info("【修仙V3】商店数据已清空，下次访问将重新生成商品")
-        except Exception as e:
-            logger.warning(f"【修仙V3】无法清空商店数据: {e}")
     
     def _initialize_rifts(self):
         """初始化秘境数据"""
