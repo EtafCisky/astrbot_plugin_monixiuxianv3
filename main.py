@@ -131,6 +131,8 @@ class XiuxianV3Plugin(Star):
         from .presentation.handlers.impart_handler import ImpartHandler
         from .presentation.handlers.ranking_handler import RankingHandler
         from .presentation.handlers.market_handler import MarketHandler
+        from .presentation.handlers.spirit_field_handler import SpiritFieldHandler
+        from .presentation.handlers.seed_shop_handler import SeedShopHandler
         
         spirit_root_gen = SpiritRootGenerator(self.config_manager)
         
@@ -214,6 +216,12 @@ class XiuxianV3Plugin(Star):
         self.market_handler = MarketHandler(
             self.container.market_service(),
             self.container.player_service()
+        )
+        self.spirit_field_handler = SpiritFieldHandler(
+            self.container.spirit_field_service()
+        )
+        self.seed_shop_handler = SeedShopHandler(
+            self.container.seed_shop_service()
         )
     
     async def initialize(self):
@@ -578,18 +586,8 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.LIST_ITEM)
-    async def cmd_list_item(self, event: AstrMessageEvent, args: str = ""):
+    async def cmd_list_item(self, event: AstrMessageEvent, item_name: str = "", price: str = ""):
         """市场上架"""
-        # 解析参数：物品名称 价格
-        parts = args.split()
-        if len(parts) < 2:
-            async for result in self.market_handler.handle_list_item(event, "", ""):
-                yield result
-            return
-        
-        item_name = parts[0]
-        price = parts[1]
-        
         async for result in self.market_handler.handle_list_item(event, item_name, price):
             yield result
     
@@ -597,6 +595,50 @@ class XiuxianV3Plugin(Star):
     async def cmd_unlist_item(self, event: AstrMessageEvent, listing_id: str = ""):
         """市场下架"""
         async for result in self.market_handler.handle_unlist_item(event, listing_id):
+            yield result
+    
+    # ===== 灵田系统命令（新种子-药草系统）=====
+    
+    @filter.command(Commands.FARM_INFO)
+    async def cmd_farm_info(self, event: AstrMessageEvent):
+        """灵田"""
+        async for result in self.spirit_field_handler.handle_field_status(event):
+            yield result
+    
+    @filter.command(Commands.FARM_INFO_ALT)
+    async def cmd_farm_info_alt(self, event: AstrMessageEvent):
+        """lingtian"""
+        async for result in self.spirit_field_handler.handle_field_status(event):
+            yield result
+    
+    @filter.command(Commands.PLANT_HERB)
+    async def cmd_plant_herb(self, event: AstrMessageEvent, herb_name: str = ""):
+        """种植"""
+        async for result in self.spirit_field_handler.handle_plant(event, herb_name):
+            yield result
+    
+    @filter.command(Commands.HARVEST)
+    async def cmd_harvest(self, event: AstrMessageEvent):
+        """收获"""
+        async for result in self.spirit_field_handler.handle_harvest(event):
+            yield result
+    
+    @filter.command(Commands.UPGRADE_FARM)
+    async def cmd_upgrade_farm(self, event: AstrMessageEvent):
+        """灵田升级"""
+        async for result in self.spirit_field_handler.handle_upgrade(event):
+            yield result
+    
+    @filter.command(Commands.SEED_SHOP)
+    async def cmd_seed_shop(self, event: AstrMessageEvent):
+        """种子商店"""
+        async for result in self.seed_shop_handler.handle_shop(event):
+            yield result
+    
+    @filter.command(Commands.BUY_SEED)
+    async def cmd_buy_seed(self, event: AstrMessageEvent, seed_name: str = "", quantity: str = "1"):
+        """购买种子"""
+        async for result in self.seed_shop_handler.handle_buy(event, seed_name, quantity):
             yield result
     
     # ===== 宗门系统命令 =====

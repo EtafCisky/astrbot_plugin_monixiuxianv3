@@ -200,3 +200,258 @@ class PlayerFormatter:
             "━━━━━━━━━━━━━━━\n"
             "从此江湖上多了一个响亮的名号！"
         )
+
+
+class SpiritFieldFormatter:
+    """灵田系统格式化器"""
+    
+    @staticmethod
+    def format_field_status(
+        capacity: int,
+        used_count: int,
+        plots: list,
+        current_time: int
+    ) -> str:
+        """
+        格式化灵田状态显示
+        
+        Args:
+            capacity: 田地总容量
+            used_count: 已使用田地数量
+            plots: 田地列表
+            current_time: 当前时间戳
+            
+        Returns:
+            格式化的灵田状态消息
+        """
+        msg = (
+            "🌾 灵田状态\n"
+            "━━━━━━━━━━━━━━━\n"
+            f"田地容量：{used_count}/{capacity}\n"
+            "━━━━━━━━━━━━━━━\n"
+        )
+        
+        for plot in plots:
+            plot_num = plot.plot_id
+            if plot.is_empty():
+                msg += f"田地 {plot_num}：空闲 🟢\n"
+            else:
+                herb = plot.planted_herb
+                status = herb.format_remaining_time(current_time)
+                status_icon = "✅" if herb.is_mature(current_time) else "⏳"
+                msg += (
+                    f"田地 {plot_num}：{herb.herb_name}【{herb.herb_rank}】\n"
+                    f"  状态：{status} {status_icon}\n"
+                )
+        
+        msg += "━━━━━━━━━━━━━━━"
+        return msg
+    
+    @staticmethod
+    def format_seed_list(seeds: list, page: int = 1, page_size: int = 10) -> str:
+        """
+        格式化种子商店列表(含解锁标记)
+        
+        Args:
+            seeds: 种子列表(HerbSeed对象)
+            page: 当前页码
+            page_size: 每页显示数量
+            
+        Returns:
+            格式化的种子列表消息
+        """
+        total_seeds = len(seeds)
+        total_pages = (total_seeds + page_size - 1) // page_size
+        
+        # 分页
+        start_idx = (page - 1) * page_size
+        end_idx = min(start_idx + page_size, total_seeds)
+        page_seeds = seeds[start_idx:end_idx]
+        
+        msg = (
+            "🌱 种子商店\n"
+            "━━━━━━━━━━━━━━━\n"
+            f"第 {page}/{total_pages} 页\n"
+            "━━━━━━━━━━━━━━━\n"
+        )
+        
+        for seed in page_seeds:
+            unlock_status = ""
+            if seed.is_unlocked:
+                unlock_status = " 🔓已解锁"
+            else:
+                progress = seed.get_unlock_progress()
+                unlock_status = f" 📊{progress}"
+            
+            msg += (
+                f"\n【{seed.herb_name}】{unlock_status}\n"
+                f"  品级：{seed.herb_rank}\n"
+                f"  价格：{seed.seed_price:,} 灵石\n"
+                f"  成熟时间：{seed.get_grow_time_display()}\n"
+            )
+        
+        msg += "\n━━━━━━━━━━━━━━━"
+        return msg
+    
+    @staticmethod
+    def format_plant_result(
+        herb_name: str,
+        herb_rank: str,
+        plot_id: int,
+        mature_time_display: str,
+        is_unlocked: bool = False
+    ) -> str:
+        """
+        格式化种植结果
+        
+        Args:
+            herb_name: 药草名称
+            herb_rank: 药草品级
+            plot_id: 田地编号
+            mature_time_display: 成熟时间显示
+            is_unlocked: 是否使用了已解锁种子
+            
+        Returns:
+            格式化的种植结果消息
+        """
+        unlock_msg = ""
+        if is_unlocked:
+            unlock_msg = f"✨ {herb_name}种子已解锁，自动给予种子进行种植\n"
+        
+        return (
+            f"{unlock_msg}"
+            f"✅ 种植成功！\n"
+            "━━━━━━━━━━━━━━━\n"
+            f"药草：{herb_name}【{herb_rank}】\n"
+            f"田地：{plot_id}\n"
+            f"成熟时间：{mature_time_display}\n"
+            "━━━━━━━━━━━━━━━\n"
+            "耐心等待，药草即将成熟~"
+        )
+    
+    @staticmethod
+    def format_harvest_result(
+        harvested_herbs: list,
+        total_count: int
+    ) -> str:
+        """
+        格式化收获结果
+        
+        Args:
+            harvested_herbs: 收获的药草列表 [(herb_name, herb_rank, amount), ...]
+            total_count: 总收获数量
+            
+        Returns:
+            格式化的收获结果消息
+        """
+        if not harvested_herbs:
+            return (
+                "❌ 没有可收获的药草\n"
+                "━━━━━━━━━━━━━━━\n"
+                "所有田地都还在生长中~"
+            )
+        
+        msg = (
+            "🎉 收获成功！\n"
+            "━━━━━━━━━━━━━━━\n"
+        )
+        
+        for herb_name, herb_rank, amount in harvested_herbs:
+            msg += f"• {herb_name}【{herb_rank}】 x{amount}\n"
+        
+        msg += (
+            "━━━━━━━━━━━━━━━\n"
+            f"共收获 {total_count} 个药草材料\n"
+            "已添加到储物袋中~"
+        )
+        
+        return msg
+    
+    @staticmethod
+    def format_upgrade_result(
+        old_capacity: int,
+        new_capacity: int,
+        cost: int,
+        remaining_gold: int
+    ) -> str:
+        """
+        格式化灵田升级结果
+        
+        Args:
+            old_capacity: 原容量
+            new_capacity: 新容量
+            cost: 升级费用
+            remaining_gold: 剩余灵石
+            
+        Returns:
+            格式化的升级结果消息
+        """
+        return (
+            "✅ 灵田升级成功！\n"
+            "━━━━━━━━━━━━━━━\n"
+            f"田地容量：{old_capacity} → {new_capacity}\n"
+            f"消耗灵石：{cost:,}\n"
+            f"剩余灵石：{remaining_gold:,}\n"
+            "━━━━━━━━━━━━━━━\n"
+            "可以种植更多药草了~"
+        )
+    
+    @staticmethod
+    def format_seed_unlock_notification(
+        seed_name: str,
+        purchase_count: int
+    ) -> str:
+        """
+        格式化种子解锁通知
+        
+        Args:
+            seed_name: 种子名称
+            purchase_count: 购买次数
+            
+        Returns:
+            格式化的解锁通知消息
+        """
+        if purchase_count >= 5:
+            return (
+                f"🎉 恭喜！{seed_name}种子已永久解锁！\n"
+                "以后种植时不再需要购买种子！"
+            )
+        else:
+            return f"📊 {seed_name}解锁进度：{purchase_count}/5次购买"
+    
+    @staticmethod
+    def format_buy_seed_result(
+        seed_name: str,
+        quantity: int,
+        total_cost: int,
+        remaining_gold: int,
+        unlock_notification: str = ""
+    ) -> str:
+        """
+        格式化购买种子结果
+        
+        Args:
+            seed_name: 种子名称
+            quantity: 购买数量
+            total_cost: 总费用
+            remaining_gold: 剩余灵石
+            unlock_notification: 解锁通知消息
+            
+        Returns:
+            格式化的购买结果消息
+        """
+        msg = (
+            "✅ 购买成功！\n"
+            "━━━━━━━━━━━━━━━\n"
+            f"种子：{seed_name}\n"
+            f"数量：{quantity}\n"
+            f"消耗灵石：{total_cost:,}\n"
+            f"剩余灵石：{remaining_gold:,}\n"
+        )
+        
+        if unlock_notification:
+            msg += "━━━━━━━━━━━━━━━\n"
+            msg += unlock_notification + "\n"
+        
+        msg += "━━━━━━━━━━━━━━━"
+        return msg
