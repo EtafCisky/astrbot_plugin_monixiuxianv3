@@ -253,7 +253,7 @@ class SpiritFieldConstants:
         "free_after_unlock": True   # 解锁后是否免费
     }
     
-    # 灵田升级配置
+    # 灵田扩展配置
     UPGRADE_CONFIG = {
         "max_capacity": 15,         # 最大田地数
         "upgrade_increment": 2,     # 每次升级增加的田地数

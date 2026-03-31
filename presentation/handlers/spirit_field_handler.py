@@ -121,7 +121,7 @@ class SpiritFieldHandler:
         msg += "💡 提示：\n"
         msg += "• /种植 [药草名] - 种植药草\n"
         msg += "• /收获 - 收获成熟药草\n"
-        msg += "• /灵田升级 - 扩展田地容量"
+        msg += "• /开垦灵田 - 扩展田地容量"
         
         return msg
     
