@@ -89,7 +89,8 @@ class Container:
         """获取装备仓储"""
         from ..infrastructure.repositories.equipment_repo import EquipmentRepository
         storage = self.json_storage()
-        config_dir = self.data_dir / "config" if self.data_dir else Path("config")
+        # 使用ConfigManager的config_dir
+        config_dir = self.config_manager.config_dir
         return EquipmentRepository(storage, config_dir)
     
     def shop_repository(self):

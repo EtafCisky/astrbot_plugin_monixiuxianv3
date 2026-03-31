@@ -22,7 +22,8 @@ class CostCalculator:
         self.material_prices = self._extract_material_prices(items_data)
     
     def _load_items_data(self) -> Dict:
-        """从配置文件加载物品数据"""
+        """从配置文件加载物品数据（从插件config目录）"""
+        # 使用插件目录的config路径
         items_path = Path(__file__).parent.parent.parent / "config" / "items.json"
         with open(items_path, 'r', encoding='utf-8') as f:
             return json.load(f)

@@ -58,13 +58,15 @@ class RecipeValidator:
         self.pill_prices = self._create_pill_price_map()
     
     def _load_items_data(self) -> Dict:
-        """加载物品数据"""
+        """加载物品数据（从插件config目录）"""
+        # 使用插件目录的config路径
         items_path = Path(__file__).parent.parent.parent / "config" / "items.json"
         with open(items_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def _load_pills_data(self) -> List:
-        """加载突破丹药数据"""
+        """加载突破丹药数据（从插件config目录）"""
+        # 使用插件目录的config路径
         pills_path = Path(__file__).parent.parent.parent / "config" / "pills.json"
         with open(pills_path, 'r', encoding='utf-8') as f:
             return json.load(f)

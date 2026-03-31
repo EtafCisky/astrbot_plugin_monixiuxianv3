@@ -18,6 +18,7 @@ class RecipeManager:
             recipes_file_path: 配方文件路径，如果为None则使用默认路径
         """
         if recipes_file_path is None:
+            # 使用插件目录的config路径
             recipes_file_path = str(
                 Path(__file__).parent.parent.parent / "config" / "alchemy_recipes.json"
             )
