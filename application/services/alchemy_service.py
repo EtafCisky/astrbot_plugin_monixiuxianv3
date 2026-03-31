@@ -304,58 +304,8 @@ class AlchemyService:
         if not pill_data:
             return ""
         
-        # 构建效果描述
-        effects = []
-        
-        # 修为加成
-        if pill_data.get("experience_bonus"):
-            effects.append(f"增加{pill_data['experience_bonus']}修为")
-        
-        # 突破率加成
-        if pill_data.get("success_rate_bonus"):
-            effects.append(f"提升{pill_data['success_rate_bonus']}%突破率")
-        
-        # 其他效果（不显示具体数值）
-        if pill_data.get("hp_bonus"):
-            if pill_data["hp_bonus"] > 0:
-                effects.append("恢复气血")
-            else:
-                effects.append("损失气血")
-        
-        if pill_data.get("max_hp_bonus"):
-            if pill_data["max_hp_bonus"] > 0:
-                effects.append("提升气血上限")
-            else:
-                effects.append("降低气血上限")
-        
-        if pill_data.get("mp_bonus"):
-            if pill_data["mp_bonus"] > 0:
-                effects.append("提升精神力")
-            else:
-                effects.append("损失精神力")
-        
-        if pill_data.get("attack_bonus"):
-            if pill_data["attack_bonus"] > 0:
-                effects.append("提升攻击")
-            else:
-                effects.append("降低攻击")
-        
-        if pill_data.get("defense_bonus"):
-            if pill_data["defense_bonus"] > 0:
-                effects.append("提升防御")
-            else:
-                effects.append("降低防御")
-        
-        if pill_data.get("spiritual_qi_bonus"):
-            if pill_data["spiritual_qi_bonus"] > 0:
-                effects.append("提升灵力")
-            else:
-                effects.append("损失灵力")
-        
-        if pill_data.get("gold_cost"):
-            effects.append("消耗灵石")
-        
-        return "、".join(effects) if effects else "丹药效果"
+        # 直接返回description字段
+        return pill_data.get("description", "")
 
     def _calculate_alchemy_exp(self, pill_rank: str) -> int:
         """

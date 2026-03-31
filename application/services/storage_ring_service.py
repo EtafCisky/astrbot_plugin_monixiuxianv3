@@ -17,11 +17,12 @@ class StorageRingService:
     ITEM_CATEGORIES = {
         "丹药": {
             "keywords": ["丹"],
+            "exclude_keywords": ["内丹"],  # 排除内丹（属于材料）
             "priority": 1
         },
         "材料": {
             "keywords": ["草", "铁", "石", "沙", "参", "芝", "果", "花", "根", "子", "髓", "核", "粉", "砂",
-                        "皮", "血", "息", "齿轮", "碎片", "精华", "残页", "遗物", "种子"],
+                        "皮", "血", "息", "齿轮", "碎片", "精华", "残页", "遗物", "种子", "内丹"],
             "priority": 2
         },
         "法器": {
@@ -247,7 +248,18 @@ class StorageRingService:
                     continue
                 
                 keywords = config["keywords"]
+                exclude_keywords = config.get("exclude_keywords", [])
                 priority = config["priority"]
+                
+                # 检查是否包含排除关键词
+                is_excluded = False
+                for exclude_keyword in exclude_keywords:
+                    if exclude_keyword in item_name:
+                        is_excluded = True
+                        break
+                
+                if is_excluded:
+                    continue
                 
                 # 检查物品名是否包含分类关键词
                 for keyword in keywords:

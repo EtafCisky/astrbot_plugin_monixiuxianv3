@@ -821,7 +821,7 @@ class XiuxianV3Plugin(Star):
     
     @filter.command(Commands.BANK_INFO)
     async def cmd_bank_info(self, event: AstrMessageEvent):
-        """灵石银行"""
+        """银行"""
         async for result in self.bank_handler.handle_bank_info(event):
             yield result
     
