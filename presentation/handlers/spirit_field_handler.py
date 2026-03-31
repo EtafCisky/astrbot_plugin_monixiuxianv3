@@ -10,6 +10,18 @@ class SpiritFieldHandler:
     def __init__(self, spirit_field_service: SpiritFieldService):
         self.spirit_field_service = spirit_field_service
     
+    async def handle_create_field(self, event: AstrMessageEvent):
+        """处理 /开垦灵田 命令 - 创建灵田"""
+        user_id = str(event.get_sender_id())
+        
+        try:
+            # 创建灵田
+            result = self.spirit_field_service.create_field(user_id)
+            yield event.plain_result(result)
+            
+        except Exception as e:
+            yield event.plain_result(str(e))
+    
     async def handle_field_status(self, event: AstrMessageEvent):
         """处理 /灵田 命令 - 显示灵田状态"""
         user_id = str(event.get_sender_id())

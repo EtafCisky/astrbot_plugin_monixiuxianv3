@@ -627,6 +627,12 @@ class XiuxianV3Plugin(Star):
     
     # ===== 灵田系统命令（新种子-药草系统）=====
     
+    @filter.command(Commands.CREATE_FARM)
+    async def cmd_create_farm(self, event: AstrMessageEvent):
+        """开垦灵田"""
+        async for result in self.spirit_field_handler.handle_create_field(event):
+            yield result
+    
     @filter.command(Commands.FARM_INFO)
     async def cmd_farm_info(self, event: AstrMessageEvent):
         """灵田"""
@@ -648,12 +654,6 @@ class XiuxianV3Plugin(Star):
     @filter.command(Commands.FARM_INFO_ALT3)
     async def cmd_farm_info_alt3(self, event: AstrMessageEvent):
         """我的灵田"""
-        async for result in self.spirit_field_handler.handle_field_status(event):
-            yield result
-    
-    @filter.command(Commands.CREATE_FARM)
-    async def cmd_create_farm(self, event: AstrMessageEvent):
-        """开垦灵田"""
         async for result in self.spirit_field_handler.handle_field_status(event):
             yield result
     
