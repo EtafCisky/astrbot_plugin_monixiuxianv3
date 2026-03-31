@@ -424,3 +424,37 @@ class ImpartInfoTable(Base):
     )
 
 
+class SpiritFieldTable(Base):
+    """灵田系统表"""
+    __tablename__ = 'spirit_fields'
+    
+    user_id = Column(String(64), ForeignKey('players.user_id', ondelete='CASCADE'), primary_key=True, comment='用户ID')
+    capacity = Column(Integer, nullable=False, default=3, comment='田地总容量')
+    unlocked_seeds = Column(Text, nullable=False, default='[]', comment='已解锁的种子ID列表（JSON）')
+    seed_purchase_count = Column(Text, nullable=False, default='{}', comment='种子购买次数（JSON）')
+    created_at = Column(Integer, nullable=False, default=lambda: int(time.time()), comment='创建时间')
+    updated_at = Column(Integer, nullable=False, default=lambda: int(time.time()), onupdate=lambda: int(time.time()), comment='更新时间')
+    
+    __table_args__ = (
+        Index('idx_spirit_field_user', 'user_id'),
+    )
+
+
+class SpiritFieldPlotTable(Base):
+    """灵田田地表"""
+    __tablename__ = 'spirit_field_plots'
+    
+    plot_id = Column(Integer, primary_key=True, autoincrement=True, comment='田地ID')
+    user_id = Column(String(64), ForeignKey('players.user_id', ondelete='CASCADE'), nullable=False, comment='用户ID')
+    herb_id = Column(String(64), nullable=True, comment='药草物品ID')
+    herb_name = Column(String(64), nullable=True, comment='药草名称')
+    herb_rank = Column(String(16), nullable=True, comment='药草品级')
+    plant_time = Column(Integer, nullable=True, comment='种植时间（Unix时间戳）')
+    mature_time = Column(Integer, nullable=True, comment='成熟时间（Unix时间戳）')
+    
+    __table_args__ = (
+        Index('idx_plot_user', 'user_id'),
+        Index('idx_plot_mature', 'mature_time'),
+    )
+
+

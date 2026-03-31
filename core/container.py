@@ -164,6 +164,18 @@ class Container:
         storage = self.json_storage()
         return MarketRepository(storage)
     
+    def spirit_field_repository(self):
+        """获取灵田仓储"""
+        from ..infrastructure.repositories.spirit_field_repo import SpiritFieldRepository
+        storage = self.json_storage()
+        return SpiritFieldRepository(storage)
+    
+    def plot_repository(self):
+        """获取田地仓储"""
+        from ..infrastructure.repositories.plot_repo import PlotRepository
+        storage = self.json_storage()
+        return PlotRepository(storage)
+    
     # 工具类工厂方法
     def spirit_root_generator(self):
         """获取灵根生成器"""
@@ -375,6 +387,27 @@ class Container:
             self.player_repository(),
             self.storage_ring_repository(),
             self.storage_ring_service(),
+            self.config_manager()
+        )
+    
+    def spirit_field_service(self):
+        """获取灵田服务（新种子-药草系统）"""
+        from ..application.services.spirit_field_service import SpiritFieldService
+        return SpiritFieldService(
+            self.spirit_field_repository(),
+            self.plot_repository(),
+            self.player_repository(),
+            self.storage_ring_repository(),
+            self.config_manager()
+        )
+    
+    def seed_shop_service(self):
+        """获取种子商店服务"""
+        from ..application.services.seed_shop_service import SeedShopService
+        return SeedShopService(
+            self.player_repository(),
+            self.storage_ring_repository(),
+            self.spirit_field_repository(),
             self.config_manager()
         )
     

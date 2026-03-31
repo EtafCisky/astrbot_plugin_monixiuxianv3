@@ -117,12 +117,19 @@ class Commands:
     UPGRADE_BLESSED_LAND = "升级洞天"
     COLLECT_BLESSED_LAND = "洞天收取"
     
-    # 灵田系统
-    FARM_INFO = "灵田信息"
+    # 灵田系统（新种子-药草系统）
+    FARM_INFO = "灵田"  # 需求 10.1: /灵田 或 /lingtian
+    FARM_INFO_ALT = "lingtian"  # 需求 10.1: 备用命令
+    PLANT_HERB = "种植"  # 需求 10.2: /种植 [药草名称]
+    HARVEST = "收获"  # 需求 10.3: /收获
+    UPGRADE_FARM = "灵田升级"  # 需求 10.5: /灵田升级
+    SEED_SHOP = "种子商店"  # 需求 10.4: /种子商店
+    BUY_SEED = "购买种子"  # 需求 10.6: /购买种子 [种子名称] [数量]
+    
+    # 旧灵田系统（已废弃，保留用于兼容）
     CREATE_FARM = "开垦灵田"
-    PLANT_HERB = "种植"
-    HARVEST = "收获"
-    UPGRADE_FARM = "升级灵田"
+    OLD_FARM_INFO = "灵田信息"
+    OLD_UPGRADE_FARM = "升级灵田"
     
     # 天地灵眼系统
     SPIRIT_EYE_INFO = "灵眼信息"
@@ -202,3 +209,51 @@ class SuccessMessages:
     BREAKTHROUGH_SUCCESS = "🎊 突破成功！"
     ITEM_PURCHASED = "✅ 购买成功！"
     ITEM_SOLD = "✅ 出售成功！"
+
+
+class SpiritFieldConstants:
+    """灵田系统常量"""
+    # 成熟时间配置（秒）
+    GROW_TIME_CONFIG = {
+        "凡品": {
+            "min": 3600,      # 1小时
+            "max": 7200       # 2小时
+        },
+        "珍品": {
+            "min": 21600,     # 6小时
+            "max": 43200      # 12小时
+        },
+        "圣品": {
+            "min": 86400,     # 1天
+            "max": 259200     # 3天
+        },
+        "帝品": {
+            "min": 432000,    # 5天
+            "max": 604800     # 7天
+        },
+        "道品": {
+            "min": 864000,    # 10天
+            "max": 864000     # 10天
+        },
+        "仙品": {
+            "min": 1296000,   # 15天
+            "max": 1296000    # 15天
+        },
+        "神品": {
+            "min": 1728000,   # 20天
+            "max": 1728000    # 20天
+        }
+    }
+    
+    # 种子解锁配置
+    SEED_UNLOCK_CONFIG = {
+        "unlock_threshold": 5,      # 解锁所需购买次数
+        "free_after_unlock": True   # 解锁后是否免费
+    }
+    
+    # 灵田升级配置
+    UPGRADE_CONFIG = {
+        "max_capacity": 15,         # 最大田地数
+        "upgrade_increment": 2,     # 每次升级增加的田地数
+        "cost_multiplier": 10000    # 升级费用 = 当前容量 × 10000
+    }

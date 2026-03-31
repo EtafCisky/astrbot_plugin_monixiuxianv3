@@ -229,27 +229,26 @@ class PlayerRepository(BaseRepository[Player]):
             state: 状态值（字符串或 PlayerState 枚举）
             extra_data: 额外数据（JSON 字符串）
         """
-        # 获取玩家
-        player = self.get_by_id(user_id)
-        if not player:
+        # 直接从存储中获取玩家数据（不通过领域模型）
+        player_data = self.storage.get(self.filename, user_id)
+        if not player_data:
             raise ValueError(f"玩家不存在: {user_id}")
         
-        # 更新玩家状态
-        # 如果 state 是 PlayerState 枚举，获取其值
+        # 更新状态字段
         if isinstance(state, PlayerState):
-            player.state = state
+            player_data['state'] = state.value
         else:
-            # 如果是字符串，尝试转换为 PlayerState
-            player.state = PlayerState.from_string(state)
+            # 如果是字符串，直接使用
+            player_data['state'] = state
         
-        # 保存玩家
-        self.save(player)
+        # 保存更新后的数据
+        self.storage.set(self.filename, user_id, player_data)
         
         # 保存额外数据到 player_states.json
         if extra_data is not None:
             state_data = {
                 'user_id': user_id,
-                'state': player.state.value,
+                'state': player_data['state'],
                 'extra_data': extra_data,
                 'updated_at': TimestampConverter.to_iso8601(int(time.time()))
             }

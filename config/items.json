@@ -764,6 +764,982 @@
     "price": 8000,
     "shop_weight": 100
   },
+  "2100": {
+    "name": "白露草",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清晨露水滋养的灵草，药性清凉，可解暑热。",
+    "price": 180,
+    "shop_weight": 1000
+  },
+  "2101": {
+    "name": "碧云藤",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "生长在云雾缭绕之地的藤蔓，柔韧而富有灵性。",
+    "price": 160,
+    "shop_weight": 1000
+  },
+  "2102": {
+    "name": "赤焰花",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "花瓣如火焰般鲜红，蕴含微弱火灵力。",
+    "price": 190,
+    "shop_weight": 1000
+  },
+  "2103": {
+    "name": "紫罗兰",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "香气宜人的紫色小花，可安神定志。",
+    "price": 140,
+    "shop_weight": 1000
+  },
+  "2104": {
+    "name": "黄精",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "补气养血的常见药材，药性平和。",
+    "price": 170,
+    "shop_weight": 1000
+  },
+  "2105": {
+    "name": "当归",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "活血补血的基础药材，炼丹常用。",
+    "price": 150,
+    "shop_weight": 1000
+  },
+  "2106": {
+    "name": "茯苓",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "生长在松树根下的菌类，可健脾宁心。",
+    "price": 130,
+    "shop_weight": 1000
+  },
+  "2107": {
+    "name": "甘草",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "调和诸药的基础药材，炼丹必备。",
+    "price": 110,
+    "shop_weight": 1000
+  },
+  "2108": {
+    "name": "薄荷",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清凉解表的草药，可疏风散热。",
+    "price": 120,
+    "shop_weight": 1000
+  },
+  "2109": {
+    "name": "菊花",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清肝明目的常见花草，药性温和。",
+    "price": 140,
+    "shop_weight": 1000
+  },
+  "2110": {
+    "name": "枸杞",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "滋补肝肾的红色果实，可明目养血。",
+    "price": 160,
+    "shop_weight": 1000
+  },
+  "2111": {
+    "name": "山楂",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "酸甜可口的果实，可消食化积。",
+    "price": 100,
+    "shop_weight": 1000
+  },
+  "2112": {
+    "name": "陈皮",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "陈年橘皮，理气健脾，炼丹辅料。",
+    "price": 130,
+    "shop_weight": 1000
+  },
+  "2113": {
+    "name": "桔梗",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "开宣肺气的草药，可化痰止咳。",
+    "price": 150,
+    "shop_weight": 1000
+  },
+  "2114": {
+    "name": "白芍",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "养血柔肝的根茎类药材，药性平和。",
+    "price": 170,
+    "shop_weight": 1000
+  },
+  "2115": {
+    "name": "川芎",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "活血行气的药材，可止痛通络。",
+    "price": 180,
+    "shop_weight": 1000
+  },
+  "2116": {
+    "name": "防风",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "祛风解表的草药，可胜湿止痛。",
+    "price": 140,
+    "shop_weight": 1000
+  },
+  "2117": {
+    "name": "荆芥",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "发汗解表的常用药材，药性辛温。",
+    "price": 120,
+    "shop_weight": 1000
+  },
+  "2118": {
+    "name": "连翘",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清热解毒的果实，可消肿散结。",
+    "price": 150,
+    "shop_weight": 1000
+  },
+  "2119": {
+    "name": "金银花",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清热解毒的花蕾，药性寒凉。",
+    "price": 160,
+    "shop_weight": 1000
+  },
+  "2120": {
+    "name": "板蓝根",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清热解毒的根茎，可凉血利咽。",
+    "price": 140,
+    "shop_weight": 1000
+  },
+  "2121": {
+    "name": "蒲公英",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清热解毒的野草，可消肿散结。",
+    "price": 110,
+    "shop_weight": 1000
+  },
+  "2122": {
+    "name": "车前草",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "利水通淋的草药，可清热明目。",
+    "price": 120,
+    "shop_weight": 1000
+  },
+  "2123": {
+    "name": "夏枯草",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "清肝明目的草药，可散结消肿。",
+    "price": 130,
+    "shop_weight": 1000
+  },
+  "2124": {
+    "name": "半夏",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "燥湿化痰的块茎，可降逆止呕。",
+    "price": 170,
+    "shop_weight": 1000
+  },
+  "2126": {
+    "name": "苍术",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "燥湿健脾的根茎，可祛风散寒。",
+    "price": 160,
+    "shop_weight": 1000
+  },
+  "2127": {
+    "name": "白术",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "补气健脾的根茎，药性温和。",
+    "price": 180,
+    "shop_weight": 1000
+  },
+  "2128": {
+    "name": "党参",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "补中益气的根茎，可生津养血。",
+    "price": 190,
+    "shop_weight": 1000
+  },
+  "2129": {
+    "name": "黄芪",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "补气固表的根茎，可托毒生肌。",
+    "price": 200,
+    "shop_weight": 1000
+  },
+  "2200": {
+    "name": "龙须草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在龙脉之上的灵草，蕴含微弱龙气。",
+    "price": 900,
+    "shop_weight": 100
+  },
+  "2201": {
+    "name": "凝霜花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "寒冬盛开的奇花，花瓣凝结冰霜，药性极寒。",
+    "price": 1200,
+    "shop_weight": 100
+  },
+  "2202": {
+    "name": "雷击木心",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "被雷电击中的古木核心，蕴含雷霆之力。",
+    "price": 1400,
+    "shop_weight": 100
+  },
+  "2203": {
+    "name": "碧海珊瑚",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "深海生长的灵珊瑚，可滋阴补肾。",
+    "price": 1600,
+    "shop_weight": 100
+  },
+  "2204": {
+    "name": "七星草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "叶片排列如北斗七星的奇草，可通灵开窍。",
+    "price": 1100,
+    "shop_weight": 100
+  },
+  "2205": {
+    "name": "紫电藤",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "雷雨天会闪烁紫光的藤蔓，蕴含雷电之力。",
+    "price": 1300,
+    "shop_weight": 100
+  },
+  "2206": {
+    "name": "赤血莲",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在血池深处的莲花，大补气血。",
+    "price": 1500,
+    "shop_weight": 100
+  },
+  "2207": {
+    "name": "玄阴草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在极阴之地的灵草，可滋阴补虚。",
+    "price": 1000,
+    "shop_weight": 100
+  },
+  "2208": {
+    "name": "烈阳花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "吸收烈日精华的火红花朵，蕴含至阳之力。",
+    "price": 1400,
+    "shop_weight": 100
+  },
+  "2209": {
+    "name": "月华草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "只在月圆之夜开花的灵草，可凝神静气。",
+    "price": 1200,
+    "shop_weight": 100
+  },
+  "2210": {
+    "name": "星辰花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "花瓣闪烁星光的奇花，蕴含星辰之力。",
+    "price": 1600,
+    "shop_weight": 100
+  },
+  "2211": {
+    "name": "碧落黄泉草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在生死交界的灵草，可沟通阴阳。",
+    "price": 1800,
+    "shop_weight": 100
+  },
+  "2212": {
+    "name": "五色灵芝",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "五行俱全的灵芝，药效均衡。",
+    "price": 2000,
+    "shop_weight": 100
+  },
+  "2213": {
+    "name": "青龙草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "形似青龙的灵草，可强筋壮骨。",
+    "price": 1700,
+    "shop_weight": 100
+  },
+  "2214": {
+    "name": "白虎花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "蕴含白虎煞气的花朵，可增强杀伐之力。",
+    "price": 1900,
+    "shop_weight": 100
+  },
+  "2215": {
+    "name": "朱雀羽草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "叶片如朱雀羽毛的灵草，蕴含火焰之力。",
+    "price": 2100,
+    "shop_weight": 100
+  },
+  "2216": {
+    "name": "玄武甲草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "叶片坚硬如甲的灵草，可增强防御。",
+    "price": 1800,
+    "shop_weight": 100
+  },
+  "2217": {
+    "name": "麒麟草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "传说中麒麟踏过之地生长的灵草，祥瑞之物。",
+    "price": 2200,
+    "shop_weight": 100
+  },
+  "2218": {
+    "name": "凤凰花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "形似凤凰的花朵，蕴含涅槃之力。",
+    "price": 2400,
+    "shop_weight": 100
+  },
+  "2219": {
+    "name": "龙涎草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在龙涎滋养之地的灵草，可增强灵力。",
+    "price": 2600,
+    "shop_weight": 100
+  },
+  "2220": {
+    "name": "鬼面花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "花朵形似鬼面的阴邪之物，可炼制特殊丹药。",
+    "price": 1300,
+    "shop_weight": 100
+  },
+  "2221": {
+    "name": "九曲灵参",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "根茎九曲的灵参，大补元气。",
+    "price": 2800,
+    "shop_weight": 100
+  },
+  "2222": {
+    "name": "太乙青莲",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "青色的莲花，可净化心神。",
+    "price": 2300,
+    "shop_weight": 100
+  },
+  "2223": {
+    "name": "紫霄芝",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在云霄之上的紫色灵芝，可增强神识。",
+    "price": 2500,
+    "shop_weight": 100
+  },
+  "2224": {
+    "name": "碧血草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "汁液碧绿如血的灵草，可解百毒。",
+    "price": 1900,
+    "shop_weight": 100
+  },
+  "2225": {
+    "name": "金刚藤",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "坚硬如金刚的藤蔓，可强化体魄。",
+    "price": 2100,
+    "shop_weight": 100
+  },
+  "2226": {
+    "name": "玉髓花",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "花瓣晶莹如玉的灵花，可滋养肌肤。",
+    "price": 2000,
+    "shop_weight": 100
+  },
+  "2300": {
+    "name": "太古龙血草",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "被太古真龙之血浇灌的灵草，蕴含强大龙威。",
+    "price": 12000,
+    "shop_weight": 100
+  },
+  "2301": {
+    "name": "混沌青莲",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "传说中开天辟地时诞生的青莲，蕴含混沌之力。",
+    "price": 18000,
+    "shop_weight": 100
+  },
+  "2302": {
+    "name": "不死神药",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "传说中可令人不死的神药，药效惊世骇俗。",
+    "price": 25000,
+    "shop_weight": 100
+  },
+  "2303": {
+    "name": "轮回花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "生长在轮回之地的奇花，可逆转生死。",
+    "price": 16000,
+    "shop_weight": 100
+  },
+  "2304": {
+    "name": "菩提子",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "菩提树结出的圣果，可助人悟道。",
+    "price": 14000,
+    "shop_weight": 100
+  },
+  "2305": {
+    "name": "蟠桃",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "传说中的仙桃，食之可延寿千年。",
+    "price": 20000,
+    "shop_weight": 100
+  },
+  "2306": {
+    "name": "人参果",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "形似婴儿的仙果，闻之可增寿三百年。",
+    "price": 22000,
+    "shop_weight": 100
+  },
+  "2307": {
+    "name": "紫金葫芦藤",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "结出紫金葫芦的仙藤，可炼制顶级丹药。",
+    "price": 13000,
+    "shop_weight": 100
+  },
+  "2308": {
+    "name": "太阳神花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "吸收太阳精华万年的神花，蕴含至阳之力。",
+    "price": 17000,
+    "shop_weight": 100
+  },
+  "2309": {
+    "name": "太阴神草",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "吸收太阴精华万年的神草，蕴含至阴之力。",
+    "price": 17000,
+    "shop_weight": 100
+  },
+  "2310": {
+    "name": "星辰神果",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "吸收星辰之力凝聚的神果，可增强神识。",
+    "price": 15000,
+    "shop_weight": 100
+  },
+  "2311": {
+    "name": "五行神芝",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "五行之力完美融合的神芝，药效无双。",
+    "price": 19000,
+    "shop_weight": 100
+  },
+  "2312": {
+    "name": "阴阳合欢花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "阴阳二气交融的神花，可调和阴阳。",
+    "price": 14000,
+    "shop_weight": 100
+  },
+  "2313": {
+    "name": "生命之树叶",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "生命之树的叶片，蕴含无尽生机。",
+    "price": 21000,
+    "shop_weight": 100
+  },
+  "2314": {
+    "name": "世界树根",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "支撑世界的神树根须，蕴含世界本源。",
+    "price": 23000,
+    "shop_weight": 100
+  },
+  "2315": {
+    "name": "时光之花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "掌控时光的神花，可逆转时间。",
+    "price": 26000,
+    "shop_weight": 100
+  },
+  "2316": {
+    "name": "空间之果",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "蕴含空间法则的神果，可掌控空间。",
+    "price": 24000,
+    "shop_weight": 100
+  },
+  "2317": {
+    "name": "造化神莲",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "夺天地造化的神莲，可起死回生。",
+    "price": 28000,
+    "shop_weight": 100
+  },
+  "2318": {
+    "name": "涅槃神花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "凤凰涅槃之地生长的神花，可重生再造。",
+    "price": 20000,
+    "shop_weight": 100
+  },
+  "2319": {
+    "name": "雷劫神木",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "历经九九雷劫的神木，蕴含雷霆本源。",
+    "price": 16000,
+    "shop_weight": 100
+  },
+  "2320": {
+    "name": "业火红莲",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "业火中盛开的红莲，可焚烧业障。",
+    "price": 18000,
+    "shop_weight": 100
+  },
+  "2321": {
+    "name": "功德金莲",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "功德凝聚的金莲，可增长功德。",
+    "price": 22000,
+    "shop_weight": 100
+  },
+  "2322": {
+    "name": "因果道果",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "蕴含因果法则的道果，可洞察因果。",
+    "price": 25000,
+    "shop_weight": 100
+  },
+  "2400": {
+    "name": "鸿蒙紫气草",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "开天辟地时诞生的鸿蒙紫气凝聚而成，蕴含天地本源。",
+    "price": 80000,
+    "shop_weight": 20
+  },
+  "2401": {
+    "name": "先天五行果",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "先天五行之力凝聚的神果，可重塑五行根基。",
+    "price": 100000,
+    "shop_weight": 20
+  },
+  "2402": {
+    "name": "混沌神莲子",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "混沌青莲的莲子，蕴含开天辟地之力。",
+    "price": 120000,
+    "shop_weight": 20
+  },
+  "2403": {
+    "name": "盘古心血草",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "传说中盘古心血滋养的神草，力大无穷。",
+    "price": 150000,
+    "shop_weight": 20
+  },
+  "2404": {
+    "name": "女娲补天石花",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "女娲补天石上生长的神花，可修补天道。",
+    "price": 110000,
+    "shop_weight": 20
+  },
+  "2405": {
+    "name": "三清道果",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "三清圣人道场的道果，可助人证道。",
+    "price": 180000,
+    "shop_weight": 20
+  },
+  "2406": {
+    "name": "如来舍利花",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "如来舍利化生的神花，蕴含佛门至理。",
+    "price": 160000,
+    "shop_weight": 20
+  },
+  "2407": {
+    "name": "天道之花",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "天道显化的神花，可感悟天道法则。",
+    "price": 200000,
+    "shop_weight": 20
+  },
+  "2408": {
+    "name": "地道之根",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "地道本源凝聚的神根，可掌控大地。",
+    "price": 170000,
+    "shop_weight": 20
+  },
+  "2409": {
+    "name": "人道之果",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "人道气运凝聚的神果，可增长气运。",
+    "price": 140000,
+    "shop_weight": 20
+  },
+  "2410": {
+    "name": "轮回道莲",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "轮回本源凝聚的道莲，可掌控轮回。",
+    "price": 190000,
+    "shop_weight": 20
+  },
+  "2411": {
+    "name": "命运之树叶",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "命运之树的叶片，可改变命运。",
+    "price": 210000,
+    "shop_weight": 20
+  },
+  "2412": {
+    "name": "创世神花",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "创世之初诞生的神花，蕴含创造之力。",
+    "price": 220000,
+    "shop_weight": 20
+  },
+  "2413": {
+    "name": "毁灭道果",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "毁灭法则凝聚的道果，蕴含毁灭之力。",
+    "price": 200000,
+    "shop_weight": 20
+  },
+  "2414": {
+    "name": "永恒神草",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "永恒法则凝聚的神草，可获得永恒生命。",
+    "price": 250000,
+    "shop_weight": 20
+  },
+  "2415": {
+    "name": "虚无道莲",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "虚无本源凝聚的道莲，可化万物为虚无。",
+    "price": 180000,
+    "shop_weight": 20
+  },
+  "2416": {
+    "name": "真实之果",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "真实法则凝聚的神果，可洞察真实。",
+    "price": 170000,
+    "shop_weight": 20
+  },
+  "2417": {
+    "name": "无量道花",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "无量法则凝聚的道花，蕴含无量之力。",
+    "price": 230000,
+    "shop_weight": 20
+  },
+  "2500": {
+    "name": "大道本源果",
+    "type": "材料",
+    "rank": "道品",
+    "description": "大道本源凝聚的至高神果，可证得大道。",
+    "price": 500000,
+    "shop_weight": 10
+  },
+  "2501": {
+    "name": "混元无极莲",
+    "type": "材料",
+    "rank": "道品",
+    "description": "混元无极之境诞生的道莲，超越天道。",
+    "price": 600000,
+    "shop_weight": 10
+  },
+  "2502": {
+    "name": "太极阴阳果",
+    "type": "材料",
+    "rank": "道品",
+    "description": "太极阴阳本源凝聚的道果，可掌控阴阳。",
+    "price": 550000,
+    "shop_weight": 10
+  },
+  "2503": {
+    "name": "无上道花",
+    "type": "材料",
+    "rank": "道品",
+    "description": "无上大道显化的道花，可证无上道果。",
+    "price": 700000,
+    "shop_weight": 10
+  },
+  "2504": {
+    "name": "至高神树叶",
+    "type": "材料",
+    "rank": "道品",
+    "description": "至高神树的叶片，蕴含至高法则。",
+    "price": 650000,
+    "shop_weight": 10
+  },
+  "2505": {
+    "name": "终极道果",
+    "type": "材料",
+    "rank": "道品",
+    "description": "终极法则凝聚的道果，可达终极之境。",
+    "price": 800000,
+    "shop_weight": 10
+  },
+  "2506": {
+    "name": "超脱神莲",
+    "type": "材料",
+    "rank": "道品",
+    "description": "超脱一切的神莲，可超脱天道束缚。",
+    "price": 750000,
+    "shop_weight": 10
+  },
+  "2507": {
+    "name": "永恒道树根",
+    "type": "材料",
+    "rank": "道品",
+    "description": "永恒道树的根须，蕴含永恒本源。",
+    "price": 680000,
+    "shop_weight": 10
+  },
+  "2508": {
+    "name": "无限神花",
+    "type": "材料",
+    "rank": "道品",
+    "description": "无限法则凝聚的神花，蕴含无限可能。",
+    "price": 720000,
+    "shop_weight": 10
+  },
+  "2509": {
+    "name": "至尊道果",
+    "type": "材料",
+    "rank": "道品",
+    "description": "至尊法则凝聚的道果，可证至尊之位。",
+    "price": 850000,
+    "shop_weight": 10
+  },
+  "2510": {
+    "name": "混沌本源莲",
+    "type": "材料",
+    "rank": "道品",
+    "description": "混沌本源凝聚的道莲，可重开混沌。",
+    "price": 900000,
+    "shop_weight": 10
+  },
+  "2511": {
+    "name": "造化至尊果",
+    "type": "材料",
+    "rank": "道品",
+    "description": "造化至尊的道果，可掌控造化之力。",
+    "price": 880000,
+    "shop_weight": 10
+  },
+  "2600": {
+    "name": "仙界神药",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "仙界至宝，服之可成仙得道。",
+    "price": 1500000,
+    "shop_weight": 5
+  },
+  "2601": {
+    "name": "九天仙莲",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "九天之上的仙莲，蕴含仙道本源。",
+    "price": 1800000,
+    "shop_weight": 5
+  },
+  "2602": {
+    "name": "紫霄仙果",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "紫霄宫的仙果，可证仙道。",
+    "price": 2000000,
+    "shop_weight": 5
+  },
+  "2603": {
+    "name": "太上仙草",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "太上老君炼制的仙草，药效无双。",
+    "price": 2200000,
+    "shop_weight": 5
+  },
+  "2604": {
+    "name": "瑶池仙桃",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "瑶池王母的仙桃，食之可成仙。",
+    "price": 2500000,
+    "shop_weight": 5
+  },
+  "2605": {
+    "name": "昆仑仙芝",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "昆仑山的仙芝，蕴含仙灵之气。",
+    "price": 1700000,
+    "shop_weight": 5
+  },
+  "2606": {
+    "name": "蓬莱仙花",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "蓬莱仙岛的仙花，可延寿万年。",
+    "price": 1900000,
+    "shop_weight": 5
+  },
+  "2607": {
+    "name": "天庭神药",
+    "type": "材料",
+    "rank": "仙品",
+    "description": "天庭御药园的神药，仙帝专用。",
+    "price": 2800000,
+    "shop_weight": 5
+  },
+  "2700": {
+    "name": "混沌至尊神药",
+    "type": "材料",
+    "rank": "神品",
+    "description": "混沌至尊炼制的神药，可逆天改命。",
+    "price": 5000000,
+    "shop_weight": 1
+  },
+  "2701": {
+    "name": "盘古精血草",
+    "type": "材料",
+    "rank": "神品",
+    "description": "盘古精血滋养万年的神草，力量无穷。",
+    "price": 6000000,
+    "shop_weight": 1
+  },
+  "2702": {
+    "name": "鸿钧道果",
+    "type": "材料",
+    "rank": "神品",
+    "description": "鸿钧道祖的道果，可证混元大罗。",
+    "price": 8000000,
+    "shop_weight": 1
+  },
+  "2703": {
+    "name": "创世神莲",
+    "type": "材料",
+    "rank": "神品",
+    "description": "创世之初诞生的神莲，蕴含创世之力。",
+    "price": 7000000,
+    "shop_weight": 1
+  },
+  "2704": {
+    "name": "永恒至尊果",
+    "type": "材料",
+    "rank": "神品",
+    "description": "永恒至尊的道果，可获得永恒不灭。",
+    "price": 9999999,
+    "shop_weight": 1
+  },
   "3001": {
     "name": "青锋剑",
     "type": "法器",
