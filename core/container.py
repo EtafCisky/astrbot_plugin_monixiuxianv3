@@ -174,7 +174,8 @@ class Container:
         """获取田地仓储"""
         from ..infrastructure.repositories.plot_repo import PlotRepository
         storage = self.json_storage()
-        return PlotRepository(storage)
+        spirit_field_repo = self.spirit_field_repository()
+        return PlotRepository(storage, spirit_field_repo)
     
     # 工具类工厂方法
     def spirit_root_generator(self):
