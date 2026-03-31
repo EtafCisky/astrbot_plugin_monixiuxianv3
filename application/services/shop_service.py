@@ -343,7 +343,7 @@ class ShopService:
     
     def _get_item_effect_short(self, item: ShopItem) -> str:
         """
-        获取物品效果的简短描述
+        获取物品效果的简短描述（使用description字段）
         
         Args:
             item: 商品对象
@@ -352,106 +352,15 @@ class ShopService:
             效果描述
         """
         data = item.data
-        item_type = item.item_type
-        effects = []
         
-        # 武器/装备属性
-        if item_type in ['weapon', 'armor', 'accessory']:
-            if data.get('physical_damage', 0) > 0:
-                effects.append(f"物伤+{data['physical_damage']}")
-            if data.get('magic_damage', 0) > 0:
-                effects.append(f"法伤+{data['magic_damage']}")
-            if data.get('physical_defense', 0) > 0:
-                effects.append(f"物防+{data['physical_defense']}")
-            if data.get('magic_defense', 0) > 0:
-                effects.append(f"法防+{data['magic_defense']}")
-            if data.get('mental_power', 0) > 0:
-                effects.append(f"精神力+{data['mental_power']}")
-        
-        # 功法属性
-        elif item_type in ['main_technique', 'technique']:
-            if data.get('exp_multiplier', 0) > 0:
-                effects.append(f"修炼效率+{int(data['exp_multiplier']*100)}%")
-            if data.get('physical_damage', 0) > 0:
-                effects.append(f"物伤+{data['physical_damage']}")
-            if data.get('magic_damage', 0) > 0:
-                effects.append(f"法伤+{data['magic_damage']}")
-        
-        # 丹药效果
-        elif item_type in ['pill', 'exp_pill', 'utility_pill']:
-            effect_data = data.get('effect', {})
-            if isinstance(effect_data, dict):
-                # 修为（显示数值）
-                if 'add_experience' in effect_data:
-                    exp = effect_data['add_experience']
-                    if exp > 0:
-                        effects.append(f"修为+{exp}")
-                    elif exp < 0:
-                        effects.append(f"修为-{abs(exp)}")
-                
-                # 突破率（显示数值）
-                if 'add_breakthrough_bonus' in effect_data:
-                    bonus = int(effect_data['add_breakthrough_bonus'] * 100)
-                    effects.append(f"突破率+{bonus}%")
-                
-                # 气血（不显示数值）
-                if 'add_hp' in effect_data:
-                    hp = effect_data['add_hp']
-                    if hp > 0:
-                        effects.append("恢复气血")
-                    elif hp < 0:
-                        effects.append("损失气血")
-                
-                # 气血上限（不显示数值）
-                if 'add_max_hp' in effect_data:
-                    max_hp = effect_data['add_max_hp']
-                    if max_hp > 0:
-                        effects.append("提升气血上限")
-                    elif max_hp < 0:
-                        effects.append("降低气血上限")
-                
-                # 精神力（不显示数值）
-                if 'add_mental_power' in effect_data:
-                    mp = effect_data['add_mental_power']
-                    if mp > 0:
-                        effects.append("提升精神力")
-                    elif mp < 0:
-                        effects.append("损失精神力")
-                
-                # 攻击力（不显示数值）
-                if 'add_attack' in effect_data:
-                    atk = effect_data['add_attack']
-                    if atk > 0:
-                        effects.append("提升攻击")
-                    elif atk < 0:
-                        effects.append("降低攻击")
-                
-                # 防御力（不显示数值）
-                if 'add_defense' in effect_data:
-                    def_val = effect_data['add_defense']
-                    if def_val > 0:
-                        effects.append("提升防御")
-                    elif def_val < 0:
-                        effects.append("降低防御")
-                
-                # 灵力（不显示数值）
-                if 'add_spiritual_power' in effect_data:
-                    sp = effect_data['add_spiritual_power']
-                    if sp > 0:
-                        effects.append("提升灵力")
-                    elif sp < 0:
-                        effects.append("损失灵力")
-                
-                # 灵石消耗（不显示数值）
-                if 'add_gold' in effect_data and effect_data['add_gold'] < 0:
-                    effects.append("消耗灵石")
-        
-        # 如果有描述字段，优先使用
-        if not effects and data.get('description'):
+        # 优先使用description字段
+        if data.get('description'):
             desc = data['description']
-            return desc[:25] + "..." if len(desc) > 25 else desc
+            # 限制长度，避免显示过长
+            return desc[:30] + "..." if len(desc) > 30 else desc
         
-        return ", ".join(effects[:3]) if effects else ""
+        # 如果没有description，返回空字符串
+        return ""
     
     def buy_item(
         self, 

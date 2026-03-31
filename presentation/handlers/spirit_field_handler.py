@@ -11,12 +11,12 @@ class SpiritFieldHandler:
         self.spirit_field_service = spirit_field_service
     
     async def handle_create_field(self, event: AstrMessageEvent):
-        """处理 /开垦灵田 命令 - 创建灵田"""
+        """处理 /开垦灵田 命令 - 创建或扩展灵田"""
         user_id = str(event.get_sender_id())
         
         try:
-            # 创建灵田
-            result = self.spirit_field_service.create_field(user_id)
+            # 创建或扩展灵田
+            result = self.spirit_field_service.expand_field(user_id)
             yield event.plain_result(result)
             
         except Exception as e:

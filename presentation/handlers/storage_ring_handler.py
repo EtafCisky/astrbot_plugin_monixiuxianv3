@@ -299,3 +299,58 @@ class StorageRingHandler:
         lines.append(f"\n共找到 {len(matched)} 种物品")
         
         yield event.plain_result("".join(lines))
+    
+    @require_player
+    async def handle_view_item(self, event: AstrMessageEvent, player, item_name: str = ""):
+        """查看物品详细信息"""
+        user_id = event.get_sender_id()
+        
+        if not item_name or item_name.strip() == "":
+            yield event.plain_result(
+                "请指定要查看的物品名称\n"
+                "用法：查看物品 <物品名>\n"
+                "示例：查看物品 筑基丹"
+            )
+            return
+        
+        item_name = item_name.strip()
+        
+        # 检查储物戒中是否有该物品
+        items = self.storage_ring_service.storage_ring_repo.get_storage_ring_items(user_id)
+        if item_name not in items:
+            yield event.plain_result(f"❌ 储物戒中没有【{item_name}】")
+            return
+        
+        count = items[item_name]
+        
+        # 获取物品详细信息
+        item_info = self.storage_ring_service.get_item_details(item_name)
+        
+        if not item_info:
+            yield event.plain_result(f"❌ 未找到【{item_name}】的详细信息")
+            return
+        
+        # 格式化显示
+        lines = [
+            f"=== {item_name} ===\n",
+            f"数量：{count}\n",
+        ]
+        
+        if item_info.get('rank'):
+            lines.append(f"品级：{item_info['rank']}\n")
+        
+        if item_info.get('type'):
+            lines.append(f"类型：{item_info['type']}\n")
+        
+        if item_info.get('price'):
+            lines.append(f"参考价：{item_info['price']}灵石\n")
+        
+        lines.append("━━━━━━━━━━━━━━━\n")
+        
+        # 显示description
+        if item_info.get('description'):
+            lines.append(f"效果：\n{item_info['description']}\n")
+        else:
+            lines.append("效果：无描述\n")
+        
+        yield event.plain_result("".join(lines))

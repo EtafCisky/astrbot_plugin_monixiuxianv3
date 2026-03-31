@@ -29,6 +29,7 @@ class Commands:
     GIFT_ITEM = "赠予"
     UPGRADE_RING = "更换储物戒"
     SEARCH_ITEM = "搜索物品"
+    VIEW_ITEM = "查看物品"  # 查看物品详细信息
     
     # 装备系统
     EQUIP = "装备"

@@ -455,6 +455,58 @@ class StorageRingService:
         
         return None
     
+    def get_item_details(self, item_name: str) -> Optional[Dict]:
+        """
+        获取物品详细信息
+        
+        Args:
+            item_name: 物品名称
+            
+        Returns:
+            物品详细信息字典，包含name, type, rank, price, description等
+        """
+        # 从丹药配置获取
+        pills_config = self._load_config("pills.json")
+        if pills_config:
+            for pill in pills_config:
+                if pill.get("name") == item_name:
+                    return {
+                        "name": pill.get("name"),
+                        "type": "丹药",
+                        "rank": pill.get("rank"),
+                        "price": pill.get("price") or pill.get("gold_cost"),
+                        "description": pill.get("description", "")
+                    }
+        
+        # 从武器配置获取
+        weapons_config = self._load_config("weapons.json")
+        if weapons_config:
+            for weapon in weapons_config:
+                if weapon.get("name") == item_name:
+                    return {
+                        "name": weapon.get("name"),
+                        "type": weapon.get("type", "法器"),
+                        "rank": weapon.get("rank"),
+                        "price": weapon.get("price") or weapon.get("gold_cost"),
+                        "description": weapon.get("description", "")
+                    }
+        
+        # 从通用物品配置获取
+        items_config = self._load_config("items.json")
+        if items_config:
+            if isinstance(items_config, dict):
+                for item_id, item_data in items_config.items():
+                    if item_data.get("name") == item_name:
+                        return {
+                            "name": item_data.get("name"),
+                            "type": item_data.get("type", "其他"),
+                            "rank": item_data.get("rank"),
+                            "price": item_data.get("price") or item_data.get("gold_cost"),
+                            "description": item_data.get("description", "")
+                        }
+        
+        return None
+    
     def _load_config(self, filename: str) -> Optional[any]:
         """
         加载配置文件

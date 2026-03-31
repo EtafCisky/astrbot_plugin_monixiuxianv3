@@ -494,6 +494,12 @@ class XiuxianV3Plugin(Star):
         async for result in self.storage_ring_handler.handle_search_item(event, keyword):
             yield result
     
+    @filter.command(Commands.VIEW_ITEM)
+    async def cmd_view_item(self, event: AstrMessageEvent, item_name: str = ""):
+        """查看物品"""
+        async for result in self.storage_ring_handler.handle_view_item(event, item_name):
+            yield result
+    
     # ===== 装备系统命令 =====
     
     @filter.command(Commands.EQUIPMENT_INFO)

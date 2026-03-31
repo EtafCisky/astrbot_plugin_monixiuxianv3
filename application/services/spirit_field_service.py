@@ -59,15 +59,15 @@ class SpiritFieldService:
                         "price": item_data.get("price", 100)
                     }
     
-    def create_field(self, user_id: str) -> str:
+    def expand_field(self, user_id: str) -> str:
         """
-        创建灵田
+        开垦灵田（创建或扩展）
         
         Args:
             user_id: 用户ID
             
         Returns:
-            创建结果消息
+            操作结果消息
         """
         # 检查玩家是否存在
         player = self.player_repo.get_by_id(user_id)
@@ -76,23 +76,56 @@ class SpiritFieldService:
         
         # 检查是否已有灵田
         spirit_field = self.spirit_field_repo.get_by_user_id(user_id)
-        if spirit_field is not None:
-            return "❌ 你已经拥有灵田了！\n💡 使用「我的灵田」查看灵田状态"
         
-        # 创建灵田（初始3个田地）
-        spirit_field = self.spirit_field_repo.create(user_id, capacity=3)
-        
-        return (
-            "🎉 开垦灵田成功！\n"
-            "━━━━━━━━━━━━━━━\n"
-            "获得3块灵田\n"
-            "━━━━━━━━━━━━━━━\n"
-            "💡 提示：\n"
-            "• 使用「种子商店」购买种子\n"
-            "• 使用「种植 [药草名]」种植药草\n"
-            "• 使用「收获」收获成熟药草\n"
-            "• 使用「灵田升级」扩展田地容量"
-        )
+        if spirit_field is None:
+            # 首次开垦：创建灵田（初始3个田地，免费）
+            spirit_field = self.spirit_field_repo.create(user_id, capacity=3)
+            
+            return (
+                "🎉 开垦灵田成功！\n"
+                "━━━━━━━━━━━━━━━\n"
+                "获得3块灵田\n"
+                "━━━━━━━━━━━━━━━\n"
+                "💡 提示：\n"
+                "• 使用「种子商店」购买种子\n"
+                "• 使用「种植 [药草名]」种植药草\n"
+                "• 使用「收获」收获成熟药草\n"
+                "• 继续使用「开垦灵田」扩展田地"
+            )
+        else:
+            # 扩展灵田：检查是否可以升级
+            if not spirit_field.can_upgrade():
+                max_capacity = SpiritFieldConstants.UPGRADE_CONFIG["max_capacity"]
+                return f"❌ 灵田已达最大容量({max_capacity}块田地)"
+            
+            # 计算升级费用
+            upgrade_cost = spirit_field.calculate_upgrade_cost()
+            
+            # 检查玩家灵石
+            if player.gold < upgrade_cost:
+                return (
+                    f"❌ 灵石不足!\n"
+                    f"开垦需要: {upgrade_cost:,}灵石\n"
+                    f"当前拥有: {player.gold:,}灵石"
+                )
+            
+            # 扣除灵石
+            player.gold -= upgrade_cost
+            self.player_repo.save(player)
+            
+            # 升级灵田
+            old_capacity = spirit_field.capacity
+            spirit_field.upgrade()
+            new_capacity = spirit_field.capacity
+            
+            # 保存灵田
+            self.spirit_field_repo.save(spirit_field)
+            
+            return (
+                f"✅ 开垦灵田成功!\n"
+                f"田地数量: {old_capacity} → {new_capacity}块\n"
+                f"消耗灵石: {upgrade_cost:,}"
+            )
     
     def get_or_create_spirit_field(self, user_id: str) -> SpiritField:
         """获取或创建灵田"""
