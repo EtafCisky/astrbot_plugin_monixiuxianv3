@@ -85,18 +85,6 @@ class SpiritFieldHandler:
         except Exception as e:
             yield event.plain_result(str(e))
     
-    async def handle_upgrade(self, event: AstrMessageEvent):
-        """处理 /灵田升级 命令 - 升级灵田容量"""
-        user_id = str(event.get_sender_id())
-        
-        try:
-            # 升级灵田
-            result = self.spirit_field_service.upgrade_field(user_id)
-            yield event.plain_result(result)
-            
-        except Exception as e:
-            yield event.plain_result(str(e))
-    
     def _format_field_status(self, status: dict) -> str:
         """格式化灵田状态显示"""
         capacity = status["capacity"]

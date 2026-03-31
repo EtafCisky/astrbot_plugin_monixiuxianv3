@@ -125,7 +125,6 @@ class Commands:
     FARM_INFO_ALT3 = "我的灵田"  # 备用命令（用户习惯）
     PLANT_HERB = "种植"  # 需求 10.2: /种植 [药草名称]
     HARVEST = "收获"  # 需求 10.3: /收获
-    UPGRADE_FARM = "灵田升级"  # 需求 10.5: /灵田升级
     SEED_SHOP = "种子商店"  # 需求 10.4: /种子商店
     BUY_SEED = "购买种子"  # 需求 10.6: /购买种子 [种子名称] [数量]
     

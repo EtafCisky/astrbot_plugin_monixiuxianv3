@@ -675,12 +675,6 @@ class XiuxianV3Plugin(Star):
         async for result in self.spirit_field_handler.handle_harvest(event):
             yield result
     
-    @filter.command(Commands.UPGRADE_FARM)
-    async def cmd_upgrade_farm(self, event: AstrMessageEvent):
-        """灵田升级"""
-        async for result in self.spirit_field_handler.handle_upgrade(event):
-            yield result
-    
     @filter.command(Commands.SEED_SHOP)
     async def cmd_seed_shop(self, event: AstrMessageEvent):
         """种子商店"""
