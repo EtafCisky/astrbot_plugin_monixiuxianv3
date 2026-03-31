@@ -270,51 +270,79 @@ class XiuxianV3Plugin(Star):
             
             # 检查是否已有秘境数据
             existing_rifts = rift_repo.get_all_rifts()
+            
+            # 定义标准秘境配置（包含bounty_tag）
+            standard_rifts = [
+                {
+                    "rift_id": 1,
+                    "rift_name": "幽暗森林",
+                    "rift_level": 1,
+                    "required_level": 3,
+                    "recommended_level": 10,
+                    "exp_reward_min": 5000,
+                    "exp_reward_max": 15000,
+                    "gold_reward_min": 1000,
+                    "gold_reward_max": 3000,
+                    "description": "低级秘境，适合筑基期修士探索",
+                    "bounty_tag": "rift_dark_forest"
+                },
+                {
+                    "rift_id": 2,
+                    "rift_name": "玄冰洞窟",
+                    "rift_level": 2,
+                    "required_level": 6,
+                    "recommended_level": 13,
+                    "exp_reward_min": 20000,
+                    "exp_reward_max": 50000,
+                    "gold_reward_min": 5000,
+                    "gold_reward_max": 10000,
+                    "description": "中级秘境，适合金丹期修士探索",
+                    "bounty_tag": "rift_ice_cave"
+                },
+                {
+                    "rift_id": 3,
+                    "rift_name": "天火禁地",
+                    "rift_level": 3,
+                    "required_level": 9,
+                    "recommended_level": 16,
+                    "exp_reward_min": 80000,
+                    "exp_reward_max": 150000,
+                    "gold_reward_min": 15000,
+                    "gold_reward_max": 30000,
+                    "description": "高级秘境，适合元婴期修士探索",
+                    "bounty_tag": "rift_fire_land"
+                },
+            ]
+            
             if existing_rifts:
-                logger.info("【修仙V3】秘境数据已存在，跳过初始化")
-                return  # 已有数据，跳过初始化
+                # 已有数据，检查并更新bounty_tag
+                logger.info("【修仙V3】检查秘境数据，更新bounty_tag...")
+                for std_rift in standard_rifts:
+                    existing = next((r for r in existing_rifts if r.rift_id == std_rift["rift_id"]), None)
+                    if existing:
+                        # 如果bounty_tag为空或不匹配，更新它
+                        if not existing.bounty_tag or existing.bounty_tag != std_rift["bounty_tag"]:
+                            existing.bounty_tag = std_rift["bounty_tag"]
+                            rift_repo.save(existing)
+                            logger.info(f"【修仙V3】更新秘境 {existing.rift_name} 的bounty_tag为 {std_rift['bounty_tag']}")
+                return
             
             # 创建初始秘境
             initial_rifts = [
                 Rift(
                     rift_id=0,  # 会被自动分配
-                    rift_name="幽暗森林",
-                    rift_level=1,
-                    required_level=3,  # 炼气期四层（最低要求）
-                    recommended_level=10,  # 筑基期初期（推荐境界，死亡率5%）
-                    exp_reward_min=5000,
-                    exp_reward_max=15000,
-                    gold_reward_min=1000,
-                    gold_reward_max=3000,
-                    description="低级秘境，适合筑基期修士探索",
-                    bounty_tag="rift_dark_forest"
-                ),
-                Rift(
-                    rift_id=0,
-                    rift_name="玄冰洞窟",
-                    rift_level=2,
-                    required_level=6,  # 炼气期七层（最低要求）
-                    recommended_level=13,  # 金丹期初期（推荐境界，死亡率5%）
-                    exp_reward_min=20000,
-                    exp_reward_max=50000,
-                    gold_reward_min=5000,
-                    gold_reward_max=10000,
-                    description="中级秘境，适合金丹期修士探索",
-                    bounty_tag="rift_ice_cave"
-                ),
-                Rift(
-                    rift_id=0,
-                    rift_name="天火禁地",
-                    rift_level=3,
-                    required_level=9,  # 炼气期十层（最低要求）
-                    recommended_level=16,  # 元婴期初期（推荐境界，死亡率5%）
-                    exp_reward_min=80000,
-                    exp_reward_max=150000,
-                    gold_reward_min=15000,
-                    gold_reward_max=30000,
-                    description="高级秘境，适合元婴期修士探索",
-                    bounty_tag="rift_fire_land"
-                ),
+                    rift_name=std["rift_name"],
+                    rift_level=std["rift_level"],
+                    required_level=std["required_level"],
+                    recommended_level=std["recommended_level"],
+                    exp_reward_min=std["exp_reward_min"],
+                    exp_reward_max=std["exp_reward_max"],
+                    gold_reward_min=std["gold_reward_min"],
+                    gold_reward_max=std["gold_reward_max"],
+                    description=std["description"],
+                    bounty_tag=std["bounty_tag"]
+                )
+                for std in standard_rifts
             ]
             
             # 插入秘境数据

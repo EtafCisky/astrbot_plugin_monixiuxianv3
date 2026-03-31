@@ -275,7 +275,10 @@ class RiftService:
             raise GameException(f"探索尚未完成！还需要 {minutes} 分钟")
         
         # 获取秘境
-        rift = self.rift_repo.get_rift_by_id(rift_id) if rift_id else None
+        rift = None
+        if rift_id is not None:
+            rift = self.rift_repo.get_rift_by_id(rift_id)
+        
         rift_name = rift.rift_name if rift else "未知秘境"
         
         # 计算死亡率
@@ -370,12 +373,15 @@ class RiftService:
         self.player_repo.update_player_state(user_id, state=PlayerState.IDLE.value, extra_data=None)
         
         # 更新悬赏进度
-        if self.bounty_repo and rift:
-            try:
-                self._update_bounty_progress(user_id, rift)
-            except Exception as e:
-                # 悬赏更新失败不影响秘境完成
-                pass
+        if self.bounty_repo:
+            if rift:
+                try:
+                    self._update_bounty_progress(user_id, rift)
+                except Exception as e:
+                    # 悬赏更新失败不影响秘境完成
+                    pass
+            # 如果 rift 为 None，说明秘境数据获取失败，但不影响奖励发放
+            # 只是无法更新悬赏进度
         
         # 构建事件描述，包含合成信息
         event_desc = event["desc"]
