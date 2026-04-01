@@ -82,6 +82,15 @@ class MarketRepository(BaseRepository[MarketListing]):
         """
         self.delete(listing_id)
     
+    def update_listing(self, listing: MarketListing) -> None:
+        """
+        更新上架记录
+        
+        Args:
+            listing: 上架记录对象
+        """
+        self.save(listing)
+    
     def exists(self, listing_id: str) -> bool:
         """
         检查上架记录是否存在
@@ -141,6 +150,7 @@ class MarketRepository(BaseRepository[MarketListing]):
             seller_name=data['seller_name'],
             item_name=data['item_name'],
             price=data['price'],
+            quantity=data.get('quantity', 1),  # 兼容旧数据，默认为1
             reference_price=data.get('reference_price'),
             created_at=created_at
         )
@@ -161,6 +171,7 @@ class MarketRepository(BaseRepository[MarketListing]):
             'seller_name': listing.seller_name,
             'item_name': listing.item_name,
             'price': listing.price,
+            'quantity': listing.quantity,
             'reference_price': listing.reference_price,
             'created_at': TimestampConverter.to_iso8601(listing.created_at)
         }
