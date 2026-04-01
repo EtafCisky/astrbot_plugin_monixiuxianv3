@@ -105,19 +105,19 @@ class ShopHandler:
             
             # 解析参数：物品名 [数量]
             parts = args.strip().split()
-            if len(parts) == 1:
-                item_name = parts[0]
-                quantity = 1
-            elif len(parts) >= 2:
-                # 最后一个参数可能是数量
-                try:
-                    quantity = int(parts[-1])
+            
+            # 尝试从最后一个参数解析数量
+            quantity = 1
+            item_name = args.strip()
+            
+            if len(parts) >= 2:
+                # 检查最后一个参数是否为纯数字
+                last_part = parts[-1]
+                if last_part.isdigit():
+                    quantity = int(last_part)
                     item_name = " ".join(parts[:-1])
-                except ValueError:
-                    # 如果最后一个参数不是数字，则全部作为物品名
-                    item_name = " ".join(parts)
-                    quantity = 1
-            else:
+            
+            if not item_name:
                 yield event.plain_result("❌ 请输入物品名称，例如：购买 一品凝气丹 10")
                 return
             
