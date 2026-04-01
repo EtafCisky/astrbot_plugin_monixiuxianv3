@@ -518,24 +518,19 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.BUY)
-    async def cmd_buy(self, event: AstrMessageEvent, *args):
+    async def cmd_buy(self, event: AstrMessageEvent, item_name: str = "", quantity: str = ""):
         """购买（商店或市场）"""
-        # 将所有参数合并为一个字符串
-        args_str = " ".join(str(arg) for arg in args) if args else ""
+        # 合并参数
+        if quantity:
+            args_str = f"{item_name} {quantity}"
+        else:
+            args_str = item_name
         
-        # 如果参数看起来像UUID（包含字母和数字的混合），则是市场购买
-        # 否则是商店购买
-        if args_str and any(c.isalpha() for c in args_str) and any(c.isdigit() for c in args_str) and len(args_str) >= 8:
-            # 检查是否为市场购买（UUID格式）
-            # 简单判断：如果只有一个参数且长度>=8，可能是UUID
-            if len(args) == 1 and len(args_str) >= 8:
-                # 市场购买
-                async for result in self.market_handler.handle_buy_item(event, args_str):
-                    yield result
-            else:
-                # 商店购买
-                async for result in self.shop_handler.handle_buy(event, args_str):
-                    yield result
+        # 如果参数看起来像UUID（只有一个参数且长度>=8），则是市场购买
+        if not quantity and item_name and len(item_name) >= 8 and '-' in item_name:
+            # 市场购买
+            async for result in self.market_handler.handle_buy_item(event, item_name):
+                yield result
         else:
             # 商店购买
             async for result in self.shop_handler.handle_buy(event, args_str):
