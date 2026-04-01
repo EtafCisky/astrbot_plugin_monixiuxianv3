@@ -123,7 +123,7 @@ class StorageRingService:
         # 简单检查：包含"丹"字的物品
         return "丹" in item_name
     
-    async def store_item(
+    def store_item(
         self,
         user_id: str,
         item_name: str,
@@ -174,7 +174,7 @@ class StorageRingService:
         
         return True, msg
     
-    async def discard_item(
+    def discard_item(
         self,
         user_id: str,
         item_name: str,
@@ -287,7 +287,7 @@ class StorageRingService:
         
         return sorted_result
     
-    async def upgrade_ring(
+    def upgrade_ring(
         self,
         user_id: str,
         new_ring_name: str
@@ -302,7 +302,7 @@ class StorageRingService:
             return False, f"【{new_ring_name}】不是储物戒类型的物品"
         
         # 获取玩家信息
-        player = await self.player_repo.get_by_id(user_id)
+        player = self.player_repo.get_by_id(user_id)
         if not player:
             return False, "玩家不存在"
         
@@ -330,7 +330,7 @@ class StorageRingService:
                     f"你当前拥有：{player.gold:,} 灵石"
                 )
             player.gold -= price
-            await self.player_repo.save(player)
+            self.player_repo.save(player)
         
         # 升级储物戒
         self.storage_ring_repo.set_storage_ring_name(user_id, new_ring_name)
@@ -366,7 +366,7 @@ class StorageRingService:
     
     # ===== 赠予系统 =====
     
-    async def gift_item(
+    def gift_item(
         self,
         sender_id: str,
         sender_name: str,
@@ -411,7 +411,7 @@ class StorageRingService:
         self.storage_ring_repo.set_storage_ring_items(sender_id, sender_items)
         
         # 直接存入接收者的储物戒
-        success, message = await self.store_item(receiver_id, item_name, count, silent=True)
+        success, message = self.store_item(receiver_id, item_name, count, silent=True)
         
         if success:
             return True, (
@@ -421,7 +421,7 @@ class StorageRingService:
             )
         else:
             # 存入失败，物品返还给发送者
-            await self.store_item(sender_id, item_name, count, silent=True)
+            self.store_item(sender_id, item_name, count, silent=True)
             return False, f"赠予失败：{message}\n物品已返还"
 
     def get_reference_price(self, item_name: str) -> Optional[int]:

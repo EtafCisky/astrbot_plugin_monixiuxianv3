@@ -271,12 +271,13 @@ class MarketService:
                 raise BusinessException("储物戒已满，无法添加物品")
         
         # 将物品返回到卖家储物戒
-        self.storage_ring_repo.add_item(user_id, listing.item_name, 1)
+        self.storage_ring_repo.add_item(user_id, listing.item_name, listing.quantity)
         
         # 删除上架记录
         self.market_repo.delete_listing(listing_id)
         
-        message = f"成功下架{listing.item_name}"
+        qty_msg = f" x{listing.quantity}" if listing.quantity > 1 else ""
+        message = f"成功下架{listing.item_name}{qty_msg}"
         
         return True, message
     
