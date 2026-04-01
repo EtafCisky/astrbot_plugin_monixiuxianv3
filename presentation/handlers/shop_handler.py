@@ -20,6 +20,75 @@ class ShopHandler:
         self.player_service = player_service
     
     @require_player
+    async def handle_pill_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+        """处理丹阁命令"""
+        try:
+            # 丹阁：只显示丹药
+            def pill_filter(item):
+                return item['type'] in ['pill', 'exp_pill', 'utility_pill']
+            
+            shop = self.shop_service.ensure_shop_refreshed(
+                shop_id="pill_pavilion",
+                shop_name="丹阁",
+                item_filter=pill_filter,
+                count=10,
+                refresh_hours=6
+            )
+            
+            display = self.shop_service.format_shop_display(shop)
+            yield event.plain_result(display)
+            
+        except XiuxianException as e:
+            yield event.plain_result(f"❌ {str(e)}")
+        except Exception as e:
+            yield event.plain_result(f"❌ 查看丹阁失败：{str(e)}")
+    
+    @require_player
+    async def handle_weapon_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+        """处理器阁命令"""
+        try:
+            # 器阁：只显示武器和防具
+            def weapon_filter(item):
+                return item['type'] in ['weapon', 'armor', 'accessory']
+            
+            shop = self.shop_service.ensure_shop_refreshed(
+                shop_id="weapon_pavilion",
+                shop_name="器阁",
+                item_filter=weapon_filter,
+                count=10,
+                refresh_hours=6
+            )
+            
+            display = self.shop_service.format_shop_display(shop)
+            yield event.plain_result(display)
+            
+        except XiuxianException as e:
+            yield event.plain_result(f"❌ {str(e)}")
+        except Exception as e:
+            yield event.plain_result(f"❌ 查看器阁失败：{str(e)}")
+    
+    @require_player
+    async def handle_treasure_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+        """处理百宝阁命令"""
+        try:
+            # 百宝阁：显示所有物品
+            shop = self.shop_service.ensure_shop_refreshed(
+                shop_id="general_shop",
+                shop_name="百宝阁",
+                item_filter=None,
+                count=15,
+                refresh_hours=6
+            )
+            
+            display = self.shop_service.format_shop_display(shop)
+            yield event.plain_result(display)
+            
+        except XiuxianException as e:
+            yield event.plain_result(f"❌ {str(e)}")
+        except Exception as e:
+            yield event.plain_result(f"❌ 查看百宝阁失败：{str(e)}")
+    
+    @require_player
     async def handle_buy(
         self, 
         event: AstrMessageEvent,
