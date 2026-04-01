@@ -49,7 +49,8 @@ class MarketService:
         self,
         user_id: str,
         item_name: str,
-        price: int
+        price: int,
+        quantity: int = 1
     ) -> Tuple[bool, str, Optional[MarketListing]]:
         """
         上架物品
@@ -57,7 +58,8 @@ class MarketService:
         Args:
             user_id: 用户ID
             item_name: 物品名称
-            price: 出售价格
+            price: 出售价格（单价）
+            quantity: 上架数量
             
         Returns:
             (是否成功, 消息, 上架记录)
@@ -74,12 +76,17 @@ class MarketService:
         if price <= 0:
             raise BusinessException("价格必须为正数")
         
-        # 验证物品在储物戒中
-        if not self.storage_ring_repo.has_item(user_id, item_name):
-            raise BusinessException(f"储物戒中没有{item_name}")
+        # 验证数量为正数
+        if quantity < 1:
+            raise BusinessException("数量必须大于0")
+        
+        # 验证物品在储物戒中且数量足够
+        current_count = self.storage_ring_repo.get_item_count(user_id, item_name)
+        if current_count < quantity:
+            raise BusinessException(f"储物戒中{item_name}数量不足（当前：{current_count}个，需要：{quantity}个）")
         
         # 从储物戒移除物品
-        success = self.storage_ring_repo.remove_item(user_id, item_name, 1)
+        success = self.storage_ring_repo.remove_item(user_id, item_name, quantity)
         if not success:
             raise BusinessException(f"从储物戒移除{item_name}失败")
         
@@ -96,6 +103,7 @@ class MarketService:
             seller_name=player.nickname,
             item_name=item_name,
             price=price,
+            quantity=quantity,
             reference_price=reference_price
         )
         
@@ -104,7 +112,8 @@ class MarketService:
         
         # 构建消息
         ref_price_msg = f"（参考价格：{reference_price}灵石）" if reference_price else "（无参考价格）"
-        message = f"成功上架{item_name}，售价{price}灵石{ref_price_msg}"
+        qty_msg = f" x{quantity}" if quantity > 1 else ""
+        message = f"成功上架{item_name}{qty_msg}，单价{price}灵石{ref_price_msg}"
         
         return True, message, listing
 
@@ -120,7 +129,8 @@ class MarketService:
     def buy_item(
         self,
         buyer_id: str,
-        listing_id: str
+        listing_id: str,
+        quantity: int = None
     ) -> Tuple[bool, str, Dict]:
         """
         购买物品
@@ -128,6 +138,7 @@ class MarketService:
         Args:
             buyer_id: 买家用户ID
             listing_id: 上架ID
+            quantity: 购买数量（None表示购买全部）
             
         Returns:
             (是否成功, 消息, 交易详情)
@@ -149,9 +160,19 @@ class MarketService:
         if listing.seller_id == buyer_id:
             raise BusinessException("不能购买自己的物品")
         
+        # 确定购买数量
+        buy_qty = quantity if quantity is not None else listing.quantity
+        if buy_qty < 1:
+            raise BusinessException("购买数量必须大于0")
+        if buy_qty > listing.quantity:
+            raise BusinessException(f"购买数量超过上架数量（上架：{listing.quantity}个，购买：{buy_qty}个）")
+        
+        # 计算总价
+        total_price = listing.get_total_price(buy_qty)
+        
         # 验证买家金额充足
-        if buyer.gold < listing.price:
-            raise BusinessException(f"灵石不足，需要{listing.price}灵石，当前{buyer.gold}灵石")
+        if buyer.gold < total_price:
+            raise BusinessException(f"灵石不足，需要{total_price}灵石，当前{buyer.gold}灵石")
         
         # 验证买家储物戒未满
         # 检查是否有新物品（不在储物戒中）
@@ -168,11 +189,11 @@ class MarketService:
             raise BusinessException("卖家不存在")
         
         # 计算税收和卖家收入
-        tax = listing.calculate_tax()
-        seller_revenue = listing.calculate_seller_revenue()
+        tax = listing.calculate_tax(buy_qty)
+        seller_revenue = listing.calculate_seller_revenue(buy_qty)
         
         # 扣除买家金额
-        buyer.consume_gold(listing.price)
+        buyer.consume_gold(total_price)
         self.player_repo.save(buyer)
         
         # 转账给卖家
@@ -180,22 +201,31 @@ class MarketService:
         self.player_repo.save(seller)
         
         # 将物品添加到买家储物戒
-        self.storage_ring_repo.add_item(buyer_id, listing.item_name, 1)
+        self.storage_ring_repo.add_item(buyer_id, listing.item_name, buy_qty)
         
-        # 删除上架记录
-        self.market_repo.delete_listing(listing_id)
+        # 更新或删除上架记录
+        if buy_qty >= listing.quantity:
+            # 购买全部，删除上架记录
+            self.market_repo.delete_listing(listing_id)
+        else:
+            # 部分购买，更新数量
+            listing.quantity -= buy_qty
+            self.market_repo.update_listing(listing)
         
         # 构建交易详情
         transaction_details = {
             "item_name": listing.item_name,
-            "price": listing.price,
+            "quantity": buy_qty,
+            "unit_price": listing.price,
+            "total_price": total_price,
             "tax": tax,
             "seller_revenue": seller_revenue,
             "seller_name": listing.seller_name,
             "buyer_name": buyer.nickname
         }
         
-        message = f"成功购买{listing.item_name}，花费{listing.price}灵石"
+        qty_msg = f" x{buy_qty}" if buy_qty > 1 else ""
+        message = f"成功购买{listing.item_name}{qty_msg}，花费{total_price}灵石"
         
         return True, message, transaction_details
 

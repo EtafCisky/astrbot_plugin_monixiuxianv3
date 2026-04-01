@@ -528,9 +528,19 @@ class XiuxianV3Plugin(Star):
         
         # 如果参数看起来像UUID（只有一个参数且长度>=8），则是市场购买
         if not quantity and item_name and len(item_name) >= 8 and '-' in item_name:
-            # 市场购买
+            # 市场购买（不带数量）
             async for result in self.market_handler.handle_buy_item(event, item_name):
                 yield result
+        elif quantity and item_name and len(item_name) >= 8 and '-' not in item_name:
+            # 可能是市场购买（带数量）- 检查item_name是否为UUID前缀
+            # 简单判断：如果item_name全是字母数字组合且长度>=8，可能是UUID
+            if all(c.isalnum() or c == '-' for c in item_name):
+                async for result in self.market_handler.handle_buy_item(event, item_name, quantity):
+                    yield result
+            else:
+                # 商店购买
+                async for result in self.shop_handler.handle_buy(event, args_str):
+                    yield result
         else:
             # 商店购买
             async for result in self.shop_handler.handle_buy(event, args_str):
@@ -551,9 +561,9 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.LIST_ITEM)
-    async def cmd_list_item(self, event: AstrMessageEvent, item_name: str = "", price: str = ""):
+    async def cmd_list_item(self, event: AstrMessageEvent, item_name: str = "", price: str = "", quantity: str = ""):
         """市场上架"""
-        async for result in self.market_handler.handle_list_item(event, item_name, price):
+        async for result in self.market_handler.handle_list_item(event, item_name, price, quantity):
             yield result
     
     @filter.command(Commands.UNLIST_ITEM)
