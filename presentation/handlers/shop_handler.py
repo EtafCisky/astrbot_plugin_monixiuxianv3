@@ -130,27 +130,29 @@ class ShopHandler:
                 yield event.plain_result("❌ 单次购买数量不能超过999")
                 return
             
-            # 获取当前商店ID（从玩家最后访问的商店）
-            player = self.player_service.get_player(user_id)
-            if not player:
-                yield event.plain_result("❌ 玩家不存在")
-                return
+            # 尝试从所有商店购买
+            shop_ids = ["pill_pavilion", "weapon_pavilion", "general_shop"]
             
-            # 默认使用百宝阁
-            shop_id = "general_shop"
+            for shop_id in shop_ids:
+                try:
+                    # 尝试从当前商店购买
+                    success, message = self.shop_service.buy_item(
+                        user_id=user_id,
+                        shop_id=shop_id,
+                        item_name=item_name,
+                        quantity=quantity
+                    )
+                    
+                    if success:
+                        yield event.plain_result(f"✅ {message}")
+                        return
+                        
+                except Exception:
+                    # 如果在这个商店找不到，继续尝试下一个商店
+                    continue
             
-            # 购买物品
-            success, message = self.shop_service.buy_item(
-                user_id=user_id,
-                shop_id=shop_id,
-                item_name=item_name,
-                quantity=quantity
-            )
-            
-            if success:
-                yield event.plain_result(f"✅ {message}")
-            else:
-                yield event.plain_result(f"❌ {message}")
+            # 所有商店都找不到
+            yield event.plain_result(f"❌ 没有找到【{item_name}】，请检查物品名称或等待刷新")
                 
         except XiuxianException as e:
             yield event.plain_result(f"❌ {str(e)}")
