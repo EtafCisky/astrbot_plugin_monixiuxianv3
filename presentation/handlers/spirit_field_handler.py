@@ -37,8 +37,8 @@ class SpiritFieldHandler:
         except Exception as e:
             yield event.plain_result(str(e))
     
-    async def handle_plant(self, event: AstrMessageEvent, herb_name: str = ""):
-        """处理 /种植 [药草名称] 命令 - 种植药草"""
+    async def handle_plant(self, event: AstrMessageEvent, herb_name: str = "", quantity: str = ""):
+        """处理 /种植 [药草名称] [数量] 命令 - 种植药草"""
         user_id = str(event.get_sender_id())
         
         if not herb_name:
@@ -49,18 +49,34 @@ class SpiritFieldHandler:
                 "━━━━━━━━━━━━━━━\n"
                 "💡 使用方法：\n"
                 "  /种植 灵草\n"
-                "  /种植 血莲子\n"
+                "  /种植 血莲子 5\n"
                 "━━━━━━━━━━━━━━━\n"
                 "📝 提示：\n"
                 "• 需要先在种子商店购买种子\n"
                 "• 不同品级药草成熟时间不同\n"
-                "• 购买同一种子5次后永久解锁"
+                "• 购买同一种子5次后永久解锁\n"
+                "• 支持批量种植，自动种满空闲田地"
             )
             return
         
+        # 解析数量
+        plant_quantity = 1
+        if quantity:
+            try:
+                plant_quantity = int(quantity)
+                if plant_quantity < 1:
+                    yield event.plain_result("❌ 数量必须大于0")
+                    return
+                if plant_quantity > 99:
+                    yield event.plain_result("❌ 单次种植数量不能超过99")
+                    return
+            except ValueError:
+                yield event.plain_result("❌ 数量必须是数字")
+                return
+        
         try:
             # 种植药草
-            result = self.spirit_field_service.plant_herb(user_id, herb_name)
+            result = self.spirit_field_service.plant_herb(user_id, herb_name, plant_quantity)
             yield event.plain_result(result)
             
         except Exception as e:

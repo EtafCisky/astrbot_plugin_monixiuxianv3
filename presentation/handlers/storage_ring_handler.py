@@ -101,7 +101,7 @@ class StorageRingHandler:
             return
         
         # 丢弃物品
-        success, message = await self.storage_ring_service.discard_item(user_id, item_name, count)
+        success, message = self.storage_ring_service.discard_item(user_id, item_name, count)
         
         if success:
             yield event.plain_result(f"🗑️ {message}")
@@ -202,7 +202,7 @@ class StorageRingHandler:
             return
         
         # 赠予物品
-        success, message = await self.storage_ring_service.gift_item(
+        success, message = self.storage_ring_service.gift_item(
             sender_id=user_id,
             sender_name=sender_name,
             receiver_id=target_id,
@@ -256,7 +256,7 @@ class StorageRingHandler:
         ring_name = ring_name.strip()
         
         # 升级储物戒
-        success, message = await self.storage_ring_service.upgrade_ring(user_id, ring_name)
+        success, message = self.storage_ring_service.upgrade_ring(user_id, ring_name)
         
         if success:
             yield event.plain_result(f"✅ {message}")

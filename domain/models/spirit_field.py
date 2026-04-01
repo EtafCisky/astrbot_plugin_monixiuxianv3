@@ -148,6 +148,10 @@ class SpiritField:
                 return plot
         return None
     
+    def get_available_plots(self) -> list[Plot]:
+        """获取所有空闲田地"""
+        return [plot for plot in self.plots if plot.is_empty()]
+    
     def get_occupied_plots(self) -> list[Plot]:
         """获取所有已占用的田地"""
         return [plot for plot in self.plots if not plot.is_empty()]

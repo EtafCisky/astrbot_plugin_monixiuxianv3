@@ -449,9 +449,9 @@ class XiuxianV3Plugin(Star):
     # ===== 丹药系统命令 =====
     
     @filter.command(Commands.USE_PILL)
-    async def cmd_use_pill(self, event: AstrMessageEvent, pill_name: str = ""):
+    async def cmd_use_pill(self, event: AstrMessageEvent, pill_name: str = "", quantity: str = ""):
         """服用丹药"""
-        async for result in self.pill_handler.handle_use_pill(event, pill_name):
+        async for result in self.pill_handler.handle_use_pill(event, pill_name, quantity):
             yield result
     
     @filter.command(Commands.SEARCH_PILL)
@@ -597,9 +597,9 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.PLANT_HERB)
-    async def cmd_plant_herb(self, event: AstrMessageEvent, herb_name: str = ""):
+    async def cmd_plant_herb(self, event: AstrMessageEvent, herb_name: str = "", quantity: str = ""):
         """种植"""
-        async for result in self.spirit_field_handler.handle_plant(event, herb_name):
+        async for result in self.spirit_field_handler.handle_plant(event, herb_name, quantity):
             yield result
     
     @filter.command(Commands.HARVEST)

@@ -141,21 +141,20 @@ class SpiritFieldService:
         
         return spirit_field
     
-    def plant_herb(self, user_id: str, herb_name: str) -> str:
+    def plant_herb(self, user_id: str, herb_name: str, quantity: int = 1) -> str:
         """
-        种植药草
+        种植药草（支持批量）
         
         种植逻辑:
         1. 检查药草是否可种植
         2. 检查种子是否已解锁
-        3. 如果已解锁且储物袋无种子,自动给予1个种子
-        4. 如果未解锁或储物袋有种子,验证并扣除种子
-        5. 验证田地是否有空闲
-        6. 记录种植信息
+        3. 计算可种植数量（受限于种子数量和空闲田地）
+        4. 批量种植
         
         Args:
             user_id: 用户ID
             herb_name: 药草名称
+            quantity: 种植数量
             
         Returns:
             种植结果消息
@@ -180,68 +179,82 @@ class SpiritFieldService:
         # 获取储物袋中的种子数量
         seed_count = self.storage_ring_repo.get_item_count(user_id, seed_name)
         
-        # 种植逻辑: 如果已解锁且储物袋无种子,自动给予种子
-        auto_provided = False
-        if is_unlocked and seed_count == 0:
-            # 自动给予1个种子
-            items = self.storage_ring_repo.get_storage_ring_items(user_id)
-            items[seed_name] = 1
-            self.storage_ring_repo.set_storage_ring_items(user_id, items)
-            seed_count = 1
-            auto_provided = True
+        # 获取空闲田地数量
+        available_plots = spirit_field.get_available_plots()
+        available_count = len(available_plots)
         
-        # 验证种子数量
-        if seed_count == 0:
-            return f"❌ 你的储物袋中没有【{seed_name}】"
-        
-        # 检查是否有空闲田地
-        available_plot = spirit_field.get_available_plot()
-        if available_plot is None:
+        if available_count == 0:
             occupied = len(spirit_field.get_occupied_plots())
-            return f"❌ 灵田已满!当前{occupied}/{spirit_field.capacity}个田地已使用"
+            return f"❌ 灵田已满！当前{occupied}/{spirit_field.capacity}个田地已使用"
         
-        # 扣除种子(如果不是自动给予的)
-        if not auto_provided:
+        # 如果已解锁，可以无限种植（自动给予种子）
+        if is_unlocked:
+            # 实际种植数量 = min(请求数量, 空闲田地数量)
+            actual_quantity = min(quantity, available_count)
+            need_auto_provide = actual_quantity
+        else:
+            # 未解锁，需要消耗种子
+            if seed_count == 0:
+                return f"❌ 你的储物袋中没有【{seed_name}】"
+            
+            # 实际种植数量 = min(请求数量, 种子数量, 空闲田地数量)
+            actual_quantity = min(quantity, seed_count, available_count)
+            need_auto_provide = 0
+        
+        # 批量种植
+        current_time = int(time.time())
+        planted_count = 0
+        
+        for i in range(actual_quantity):
+            if i >= len(available_plots):
+                break
+            
+            plot = available_plots[i]
+            grow_time = self._calculate_grow_time(herb_rank)
+            mature_time = current_time + grow_time
+            
+            plot.plant(
+                herb_id=herb_id,
+                herb_name=herb_name,
+                herb_rank=herb_rank,
+                plant_time=current_time,
+                mature_time=mature_time
+            )
+            planted_count += 1
+        
+        # 扣除种子（如果不是解锁状态）
+        if not is_unlocked and planted_count > 0:
             items = self.storage_ring_repo.get_storage_ring_items(user_id)
-            items[seed_name] -= 1
+            items[seed_name] -= planted_count
             if items[seed_name] <= 0:
                 del items[seed_name]
             self.storage_ring_repo.set_storage_ring_items(user_id, items)
         
-        # 计算成熟时间
-        current_time = int(time.time())
-        grow_time = self._calculate_grow_time(herb_rank)
-        mature_time = current_time + grow_time
-        
-        # 种植药草
-        available_plot.plant(
-            herb_id=herb_id,
-            herb_name=herb_name,
-            herb_rank=herb_rank,
-            plant_time=current_time,
-            mature_time=mature_time
-        )
-        
         # 保存灵田
         self.spirit_field_repo.save(spirit_field)
         
-        # 格式化成熟时间显示
-        grow_time_display = self._format_grow_time(grow_time)
-        
         # 构造返回消息
         occupied = len(spirit_field.get_occupied_plots())
-        msg = f"🌱 成功种植【{herb_name}】!\n"
+        qty_display = f" x{planted_count}" if planted_count > 1 else ""
         
-        if auto_provided:
-            msg += f"✨ 【{seed_name}】已解锁,自动给予种子进行种植\n"
+        msg_parts = [f"🌱 成功种植【{herb_name}{qty_display}】！"]
         
-        msg += (
-            f"品级: {herb_rank}\n"
-            f"成熟时间: 约{grow_time_display}\n"
-            f"当前种植: {occupied}/{spirit_field.capacity}"
-        )
+        if is_unlocked:
+            msg_parts.append(f"✨ 【{seed_name}】已解锁，自动给予种子进行种植")
         
-        return msg
+        msg_parts.append(f"品级：{herb_rank}")
+        msg_parts.append(f"当前种植：{occupied}/{spirit_field.capacity}")
+        
+        # 提示信息
+        if planted_count < quantity:
+            if planted_count < seed_count or is_unlocked:
+                # 受限于田地数量
+                msg_parts.append(f"⚠️ 空闲田地不足，仅种植了{planted_count}个（请求：{quantity}个）")
+            else:
+                # 受限于种子数量
+                msg_parts.append(f"⚠️ 种子数量不足，仅种植了{planted_count}个（请求：{quantity}个，拥有：{seed_count}个）")
+        
+        return "\n".join(msg_parts)
     
     def _calculate_grow_time(self, herb_rank: str) -> int:
         """

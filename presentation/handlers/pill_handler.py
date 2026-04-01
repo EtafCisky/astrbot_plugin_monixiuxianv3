@@ -46,24 +46,44 @@ class PillHandler:
             yield event.plain_result(f"查看丹药背包失败：{str(e)}")
     
     @require_player
-    async def handle_use_pill(self, event: AstrMessageEvent, player, pill_name: str = "") -> AsyncGenerator[str, None]:
+    async def handle_use_pill(self, event: AstrMessageEvent, player, pill_name: str = "", quantity: str = "") -> AsyncGenerator[str, None]:
         """
         服用丹药
         
-        命令格式：服用丹药 <丹药名称>
+        命令格式：服用丹药 <丹药名称> [数量]
         """
         try:
             user_id = event.get_sender_id()
             
             # 检查参数
             if not pill_name or pill_name.strip() == "":
-                yield event.plain_result("❌ 请指定要服用的丹药名称\n💡 格式：服用丹药 <丹药名称>\n例如：服用丹药 一品气血丹")
+                yield event.plain_result(
+                    "❌ 请指定要服用的丹药名称\n"
+                    "💡 格式：服用丹药 <丹药名称> [数量]\n"
+                    "例如：服用丹药 一品气血丹\n"
+                    "批量：服用丹药 一品气血丹 10"
+                )
                 return
             
             pill_name = pill_name.strip()
             
+            # 解析数量
+            use_quantity = 1
+            if quantity:
+                try:
+                    use_quantity = int(quantity)
+                    if use_quantity < 1:
+                        yield event.plain_result("❌ 数量必须大于0")
+                        return
+                    if use_quantity > 99:
+                        yield event.plain_result("❌ 单次服用数量不能超过99")
+                        return
+                except ValueError:
+                    yield event.plain_result("❌ 数量必须是数字")
+                    return
+            
             # 使用丹药
-            success, message = self.pill_service.use_pill(user_id, pill_name)
+            success, message = self.pill_service.use_pill(user_id, pill_name, use_quantity)
             
             yield event.plain_result(message)
             
