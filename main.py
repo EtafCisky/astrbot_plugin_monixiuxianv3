@@ -469,9 +469,9 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.CRAFT_PILL)
-    async def cmd_craft_pill(self, event: AstrMessageEvent, pill_name: str = ""):
+    async def cmd_craft_pill(self, event: AstrMessageEvent, pill_name: str = "", quantity: str = ""):
         """炼丹"""
-        async for result in self.alchemy_handler.handle_craft_pill_by_name(event, pill_name):
+        async for result in self.alchemy_handler.handle_craft_pill_by_name(event, pill_name, quantity):
             yield result
     
     @filter.command(Commands.QUERY_RECIPE)

@@ -57,15 +57,17 @@ class AlchemyHandler:
         self, 
         event: AstrMessageEvent,
         player,
-        pill_name: str = ""
+        pill_name: str = "",
+        quantity: str = ""
     ) -> AsyncGenerator[str, None]:
         """
-        处理通过丹药名称炼丹命令
+        处理通过丹药名称炼丹命令（支持批量）
         
         Args:
             event: 消息事件
             player: 玩家对象（由装饰器注入）
             pill_name: 丹药名称
+            quantity: 炼制数量
             
         Yields:
             响应消息
@@ -74,13 +76,34 @@ class AlchemyHandler:
         
         # 检查是否提供了丹药名称
         if not pill_name:
-            yield event.plain_result("❌ 请输入丹药名称\n💡 使用 丹药配方 查看可用配方")
+            yield event.plain_result(
+                "❌ 请输入丹药名称\n"
+                "💡 使用方法：炼丹 <丹药名称> [数量]\n"
+                "📝 例如：炼丹 筑基丹 或 炼丹 筑基丹 10\n"
+                "💡 使用 丹药配方 查看可用配方"
+            )
             return
+        
+        # 解析数量
+        craft_quantity = 1
+        if quantity:
+            try:
+                craft_quantity = int(quantity)
+                if craft_quantity < 1:
+                    yield event.plain_result("❌ 数量必须大于0")
+                    return
+                if craft_quantity > 99:
+                    yield event.plain_result("❌ 单次炼制数量不能超过99")
+                    return
+            except ValueError:
+                yield event.plain_result("❌ 数量必须是数字")
+                return
         
         try:
             success, message, result_data = self.alchemy_service.craft_pill_by_name(
                 user_id, 
-                pill_name
+                pill_name,
+                craft_quantity
             )
             yield event.plain_result(message)
         except BusinessException as e:

@@ -73,13 +73,14 @@ class AlchemyService:
             return None
         return self.recipe_manager.get_recipe_by_name(pill_name)
     
-    def craft_pill_by_name(self, user_id: str, pill_name: str) -> Tuple[bool, str, Dict]:
+    def craft_pill_by_name(self, user_id: str, pill_name: str, quantity: int = 1) -> Tuple[bool, str, Dict]:
         """
-        通过丹药名称炼制丹药
+        通过丹药名称炼制丹药（支持批量）
         
         Args:
             user_id: 用户ID
             pill_name: 丹药名称
+            quantity: 炼制数量
             
         Returns:
             (是否成功, 消息, 结果数据)
@@ -110,80 +111,129 @@ class AlchemyService:
                 f"炼制【{recipe.name}】需要炼丹等级 Lv.{recipe.level_required}（当前：Lv.{player.alchemy_level} {player.get_alchemy_title()}）"
             )
         
-        # 检查材料
-        missing_materials = []
-        
+        # 检查材料（计算最多可炼制数量）
+        max_craftable = quantity
         for material_name, required_count in recipe.materials.items():
-            # 检查储物戒中的材料
             current_count = self.storage_ring_repo.get_item_count(user_id, material_name)
-            if current_count < required_count:
-                missing_materials.append(
-                    f"{material_name}（需要{required_count}，拥有{current_count}）"
-                )
+            can_craft = current_count // required_count
+            max_craftable = min(max_craftable, can_craft)
         
-        if missing_materials:
+        if max_craftable == 0:
+            # 材料不足，显示缺少的材料
+            missing_materials = []
+            for material_name, required_count in recipe.materials.items():
+                current_count = self.storage_ring_repo.get_item_count(user_id, material_name)
+                if current_count < required_count:
+                    missing_materials.append(
+                        f"{material_name}（需要{required_count}，拥有{current_count}）"
+                    )
             raise BusinessException(
                 f"材料不足：\n" + "\n".join(missing_materials)
             )
         
-        # 计算成功率
+        # 实际炼制数量
+        actual_quantity = max_craftable
+        
+        # 批量炼制
+        success_count = 0
+        fail_count = 0
+        total_exp = 0
+        level_ups = []
+        
         base_success_rate = recipe.success_rate
-        alchemy_bonus = player.get_alchemy_success_bonus()  # 炼丹等级加成
-        final_success_rate = min(base_success_rate + alchemy_bonus, 100)
         
-        # 判断是否成功
-        is_success = random.random() * 100 < final_success_rate
-        
-        # 消耗材料
-        for material_name, required_count in recipe.materials.items():
-            self.storage_ring_repo.remove_item(user_id, material_name, required_count)
-        
-        # 计算炼丹经验
-        base_exp = self._calculate_alchemy_exp(recipe.rank)
-        gained_exp = base_exp if is_success else base_exp // 3
-        
-        # 增加炼丹经验
-        level_up = player.add_alchemy_exp(gained_exp)
-        
-        result_data = {
-            "pill_name": recipe.name,
-            "success": is_success,
-            "success_rate": final_success_rate,
-            "alchemy_exp": gained_exp,
-            "level_up": level_up
-        }
-        
-        if is_success:
-            # 炼丹成功，添加丹药到储物戒
-            self.storage_ring_repo.add_item(user_id, recipe.name, 1)
+        for i in range(actual_quantity):
+            # 计算成功率（每次都重新计算，因为等级可能提升）
+            alchemy_bonus = player.get_alchemy_success_bonus()
+            final_success_rate = min(base_success_rate + alchemy_bonus, 100)
             
-            level_up_msg = ""
+            # 判断是否成功
+            is_success = random.random() * 100 < final_success_rate
+            
+            # 消耗材料
+            for material_name, required_count in recipe.materials.items():
+                self.storage_ring_repo.remove_item(user_id, material_name, required_count)
+            
+            # 计算炼丹经验
+            base_exp = self._calculate_alchemy_exp(recipe.rank)
+            gained_exp = base_exp if is_success else base_exp // 3
+            total_exp += gained_exp
+            
+            # 增加炼丹经验
+            level_up = player.add_alchemy_exp(gained_exp)
             if level_up:
-                level_up_msg = f"\n\n🎊 炼丹等级提升！\n当前等级：Lv.{player.alchemy_level} {player.get_alchemy_title()}"
+                level_ups.append(player.alchemy_level)
             
-            message = f"""🎉 炼丹成功！
-
-获得：【{recipe.name}】× 1
-成功率：{final_success_rate}%
-炼丹经验：+{gained_exp}{level_up_msg}"""
-        else:
-            # 炼丹失败
-            level_up_msg = ""
-            if level_up:
-                level_up_msg = f"\n\n🎊 炼丹等级提升！\n当前等级：Lv.{player.alchemy_level} {player.get_alchemy_title()}"
-            
-            message = f"""💔 炼丹失败
-
-丹药：【{recipe.name}】
-成功率：{final_success_rate}%
-炼丹经验：+{gained_exp}（失败获得1/3经验）{level_up_msg}
-
-💡 提升炼丹等级可以增加成功率！"""
+            if is_success:
+                # 炼丹成功，添加丹药到储物戒
+                self.storage_ring_repo.add_item(user_id, recipe.name, 1)
+                success_count += 1
+            else:
+                fail_count += 1
         
         # 保存玩家数据
         self.player_repo.save(player)
         
-        return is_success, message, result_data
+        # 构建结果消息
+        qty_display = f" x{actual_quantity}" if actual_quantity > 1 else ""
+        result_data = {
+            "pill_name": recipe.name,
+            "quantity": actual_quantity,
+            "success_count": success_count,
+            "fail_count": fail_count,
+            "alchemy_exp": total_exp,
+            "level_ups": level_ups
+        }
+        
+        if actual_quantity == 1:
+            # 单次炼制，使用原有格式
+            alchemy_bonus = player.get_alchemy_success_bonus()
+            final_success_rate = min(base_success_rate + alchemy_bonus, 100)
+            
+            level_up_msg = ""
+            if level_ups:
+                level_up_msg = f"\n\n🎊 炼丹等级提升！\n当前等级：Lv.{player.alchemy_level} {player.get_alchemy_title()}"
+            
+            if success_count > 0:
+                message = f"""🎉 炼丹成功！
+
+获得：【{recipe.name}】× 1
+成功率：{final_success_rate}%
+炼丹经验：+{total_exp}{level_up_msg}"""
+            else:
+                message = f"""💔 炼丹失败
+
+丹药：【{recipe.name}】
+成功率：{final_success_rate}%
+炼丹经验：+{total_exp}（失败获得1/3经验）{level_up_msg}
+
+💡 提升炼丹等级可以增加成功率！"""
+        else:
+            # 批量炼制
+            level_up_msg = ""
+            if level_ups:
+                level_up_msg = f"\n🎊 炼丹等级提升：Lv.{level_ups[0]}"
+                if len(level_ups) > 1:
+                    level_up_msg += f" → Lv.{level_ups[-1]}"
+                level_up_msg += f"\n当前：Lv.{player.alchemy_level} {player.get_alchemy_title()}"
+            
+            material_warning = ""
+            if actual_quantity < quantity:
+                material_warning = f"\n⚠️ 材料不足，仅炼制了{actual_quantity}次（请求：{quantity}次）"
+            
+            message = f"""🔥 批量炼丹完成！
+
+━━━━━━━━━━━━━━━
+丹药：【{recipe.name}】
+炼制次数：{actual_quantity}
+━━━━━━━━━━━━━━━
+✅ 成功：{success_count}次
+❌ 失败：{fail_count}次
+📈 炼丹经验：+{total_exp}{level_up_msg}{material_warning}
+
+💡 成功率：{base_success_rate}% + 等级加成"""
+        
+        return success_count > 0, message, result_data
     
     def format_new_recipes(self, user_id: str) -> str:
         """
