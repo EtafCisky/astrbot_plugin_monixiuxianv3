@@ -20,7 +20,7 @@ class ShopHandler:
         self.player_service = player_service
     
     @require_player
-    async def handle_pill_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+    async def handle_pill_pavilion(self, event: AstrMessageEvent, player) -> AsyncGenerator:
         """处理丹阁命令"""
         try:
             # 丹阁：只显示丹药
@@ -44,7 +44,7 @@ class ShopHandler:
             yield event.plain_result(f"❌ 查看丹阁失败：{str(e)}")
     
     @require_player
-    async def handle_weapon_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+    async def handle_weapon_pavilion(self, event: AstrMessageEvent, player) -> AsyncGenerator:
         """处理器阁命令"""
         try:
             # 器阁：只显示武器和防具
@@ -68,7 +68,7 @@ class ShopHandler:
             yield event.plain_result(f"❌ 查看器阁失败：{str(e)}")
     
     @require_player
-    async def handle_treasure_pavilion(self, event: AstrMessageEvent) -> AsyncGenerator:
+    async def handle_treasure_pavilion(self, event: AstrMessageEvent, player) -> AsyncGenerator:
         """处理百宝阁命令"""
         try:
             # 百宝阁：显示所有物品
@@ -92,6 +92,7 @@ class ShopHandler:
     async def handle_buy(
         self, 
         event: AstrMessageEvent,
+        player,
         args: str = ""
     ) -> AsyncGenerator:
         """处理购买命令"""
