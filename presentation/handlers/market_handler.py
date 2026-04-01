@@ -83,48 +83,22 @@ class MarketHandler:
                 return
         
         try:
-            # 批量上架
-            success_count = 0
-            failed_count = 0
-            listings = []
+            # 单次上架，包含指定数量的物品
+            success, message, listing = self.market_service.list_item(
+                user_id,
+                item_name,
+                price_int,
+                quantity_int
+            )
             
-            for i in range(quantity_int):
-                try:
-                    success, message, listing = self.market_service.list_item(
-                        user_id,
-                        item_name,
-                        price_int
-                    )
-                    
-                    if success and listing:
-                        success_count += 1
-                        listings.append(listing)
-                    else:
-                        failed_count += 1
-                        if quantity_int == 1:
-                            # 单个上架失败，直接返回错误
-                            yield event.plain_result(message)
-                            return
-                        break  # 批量上架中途失败，停止继续上架
-                        
-                except Exception as e:
-                    failed_count += 1
-                    if quantity_int == 1:
-                        raise  # 单个上架出错，抛出异常
-                    break  # 批量上架中途出错，停止继续上架
-            
-            # 构建响应消息
-            if success_count > 0:
-                if quantity_int == 1:
-                    # 单个上架成功
-                    listing = listings[0]
-                    qty_display = f" x{listing.quantity}" if listing.quantity > 1 else ""
-                    total_price = listing.get_total_price()
-                    total_info = f"\n� 总价：{total_price}灵石" if listing.quantity > 1 else ""
-                    
-                    response = f"""✅ 上架成功！
+            if success and listing:
+                qty_display = f" x{listing.quantity}" if listing.quantity > 1 else ""
+                total_price = listing.get_total_price()
+                total_info = f"\n💵 总价：{total_price}灵石" if listing.quantity > 1 else ""
+                
+                response = f"""✅ 上架成功！
 
-� 上架信息：
+📋 上架信息：
 ━━━━━━━━━━━━━━━
 🆔 上架ID：{listing.listing_id[:8]}...
 📦 物品：{listing.item_name}{qty_display}
@@ -132,22 +106,9 @@ class MarketHandler:
 {f"💡 参考价：{listing.reference_price}灵石" if listing.reference_price else "💡 参考价：无"}
 
 💡 使用 市场下架 {listing.listing_id[:8]} 可以取消上架"""
-                else:
-                    # 批量上架
-                    response = f"""✅ 批量上架完成！
-
-📊 上架统计：
-━━━━━━━━━━━━━━━
-✅ 成功：{success_count}个
-❌ 失败：{failed_count}个
-📦 物品：{item_name}
-💰 单价：{price_int}灵石
-
-💡 使用 市场 查看所有上架物品"""
-                
                 yield event.plain_result(response)
             else:
-                yield event.plain_result(f"❌ 上架失败，未能上架任何物品")
+                yield event.plain_result(message)
                 
         except BusinessException as e:
             yield event.plain_result(f"❌ {str(e)}")
