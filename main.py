@@ -708,6 +708,12 @@ class XiuxianV3Plugin(Star):
         async for result in self.adventure_handler.handle_complete_adventure(event):
             yield result
     
+    @filter.command(Commands.CANCEL_ADVENTURE)
+    async def cmd_cancel_adventure(self, event: AstrMessageEvent):
+        """放弃历练"""
+        async for result in self.adventure_handler.handle_cancel_adventure(event):
+            yield result
+    
     # ===== 秘境系统命令 =====
     
     @filter.command(Commands.RIFT_LIST)

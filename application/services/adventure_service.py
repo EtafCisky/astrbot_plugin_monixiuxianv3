@@ -270,6 +270,39 @@ class AdventureService:
         
         return result
     
+    def cancel_adventure(self, user_id: str) -> str:
+        """
+        放弃历练（无奖励）
+        
+        Args:
+            user_id: 用户ID
+            
+        Returns:
+            结果消息
+            
+        Raises:
+            GameException: 各种异常
+        """
+        player = self.player_repo.get_player(user_id)
+        if not player:
+            raise GameException("你还未踏入修仙之路")
+        
+        if player.state != PlayerState.ADVENTURING:
+            raise GameException("你当前没有进行历练")
+        
+        # 解析状态数据
+        state_data = self.player_repo.get_player_state(user_id)
+        if not state_data or not state_data.extra_data:
+            raise GameException("历练数据异常")
+        
+        extra_data = json.loads(state_data.extra_data)
+        route_name = extra_data.get("route_name", "未知")
+        
+        # 重置状态（无奖励）
+        self.player_repo.update_player_state(user_id, state=PlayerState.IDLE, extra_data=None)
+        
+        return f"🚫 你放弃了【{route_name}】历练\n所有进度和奖励已清空"
+    
     def _trigger_route_event(self, route: Dict) -> Dict:
         """触发路线事件"""
         event_weights = route.get("event_weights", {})

@@ -84,6 +84,7 @@ class Commands:
     START_ADVENTURE = "开始历练"
     ADVENTURE_STATUS = "历练状态"
     COMPLETE_ADVENTURE = "完成历练"
+    CANCEL_ADVENTURE = "放弃历练"
     
     # 秘境系统
     RIFT_LIST = "秘境列表"

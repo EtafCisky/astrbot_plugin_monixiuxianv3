@@ -125,3 +125,15 @@ class AdventureHandler:
             yield event.plain_result(str(e))
         except Exception as e:
             yield event.plain_result(f"完成历练失败：{e}")
+    
+    async def handle_cancel_adventure(self, event: AstrMessageEvent) -> AsyncGenerator:
+        """处理放弃历练命令"""
+        try:
+            user_id = event.get_sender_id()
+            result = self.adventure_service.cancel_adventure(user_id)
+            yield event.plain_result(result)
+            
+        except GameException as e:
+            yield event.plain_result(str(e))
+        except Exception as e:
+            yield event.plain_result(f"放弃历练失败：{e}")
