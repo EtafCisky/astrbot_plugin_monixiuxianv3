@@ -121,8 +121,19 @@ class EquipmentRepository(BaseRepository[Equipment]):
                 "required_level_index": item_data.get("required_level_index", 0),
                 "price": item_data.get("price", 0),
                 "subtype": item_data.get("subtype", ""),
-                "equip_effects": item_data.get("equip_effects", {}),
+                "magic_damage": item_data.get("magic_damage", 0),
+                "physical_damage": item_data.get("physical_damage", 0),
+                "magic_defense": item_data.get("magic_defense", 0),
+                "physical_defense": item_data.get("physical_defense", 0),
+                "mental_power": item_data.get("mental_power", 0),
+                "max_hp": item_data.get("max_hp", 0),
+                "spiritual_qi": item_data.get("spiritual_qi", 0),
+                "exp_multiplier": item_data.get("exp_multiplier", 0.0),
             }
+            
+            # 如果有旧的equip_effects，也保留用于兼容
+            if "equip_effects" in item_data:
+                equipment_dict["equip_effects"] = item_data["equip_effects"]
             
             equipment = Equipment.from_dict(equipment_dict)
             self._items_cache[item_id] = equipment

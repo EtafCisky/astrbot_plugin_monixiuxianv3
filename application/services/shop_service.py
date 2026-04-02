@@ -323,9 +323,13 @@ class ShopService:
             effect_desc = self._get_item_effect_short(item)
             effect_line = f"\n   效果: {effect_desc}" if effect_desc else ""
             
+            # 获取物品介绍
+            description = self._get_item_description(item)
+            desc_line = f"\n   介绍: {description}" if description else ""
+            
             lines.append(
                 f"{i}. [{item.rank}] {item.name} ({type_label}){discount_text}\n"
-                f"   价格: {item.price} 灵石 {stock_text}{effect_line}\n"
+                f"   价格: {item.price} 灵石 {stock_text}{effect_line}{desc_line}\n"
             )
         
         # 刷新时间提示
@@ -343,7 +347,7 @@ class ShopService:
     
     def _get_item_effect_short(self, item: ShopItem) -> str:
         """
-        获取物品效果的简短描述（使用description字段）
+        获取物品效果的简短描述
         
         Args:
             item: 商品对象
@@ -352,15 +356,62 @@ class ShopService:
             效果描述
         """
         data = item.data
+        effects = []
         
-        # 优先使用description字段
-        if data.get('description'):
-            desc = data['description']
-            # 限制长度，避免显示过长
-            return desc[:30] + "..." if len(desc) > 30 else desc
+        # 检查各种效果
+        if data.get('effect'):
+            effect_data = data['effect']
+            if effect_data.get('add_hp'):
+                effects.append(f"恢复气血+{effect_data['add_hp']}")
+            if effect_data.get('add_experience'):
+                effects.append(f"修为+{effect_data['add_experience']}")
+            if effect_data.get('add_max_hp'):
+                effects.append(f"气血上限+{effect_data['add_max_hp']}")
+            if effect_data.get('add_spiritual_power'):
+                effects.append(f"灵力+{effect_data['add_spiritual_power']}")
+            if effect_data.get('breakthrough_rate'):
+                effects.append(f"突破成功率+{effect_data['breakthrough_rate']}%")
         
-        # 如果没有description，返回空字符串
-        return ""
+        # 装备属性
+        if data.get('magic_damage'):
+            effects.append(f"法伤+{data['magic_damage']}")
+        if data.get('physical_damage'):
+            effects.append(f"物伤+{data['physical_damage']}")
+        if data.get('magic_defense'):
+            effects.append(f"法防+{data['magic_defense']}")
+        if data.get('physical_defense'):
+            effects.append(f"物防+{data['physical_defense']}")
+        if data.get('mental_power'):
+            effects.append(f"精神力+{data['mental_power']}")
+        if data.get('max_hp') and not data.get('effect'):  # 避免重复显示
+            effects.append(f"气血上限+{data['max_hp']}")
+        if data.get('exp_multiplier'):
+            effects.append(f"修炼倍率+{int(data['exp_multiplier']*100)}%")
+        
+        # 旧版装备效果
+        if data.get('equip_effects'):
+            equip_effects = data['equip_effects']
+            if equip_effects.get('attack'):
+                effects.append(f"攻击+{equip_effects['attack']}")
+            if equip_effects.get('defense'):
+                effects.append(f"防御+{equip_effects['defense']}")
+        
+        return "、".join(effects) if effects else ""
+    
+    def _get_item_description(self, item: ShopItem) -> str:
+        """
+        获取物品介绍
+        
+        Args:
+            item: 商品对象
+            
+        Returns:
+            物品介绍
+        """
+        data = item.data
+        desc = data.get('description', '')
+        # 限制长度
+        return desc[:40] + "..." if len(desc) > 40 else desc
     
     def buy_item(
         self, 

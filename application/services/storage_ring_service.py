@@ -475,7 +475,7 @@ class StorageRingService:
             item_name: 物品名称
             
         Returns:
-            物品详细信息字典，包含name, type, rank, price, description等
+            物品详细信息字典，包含name, type, rank, price, description, effects等
         """
         # 从丹药配置获取
         pills_config = self._load_config("pills.json")
@@ -487,7 +487,8 @@ class StorageRingService:
                         "type": "丹药",
                         "rank": pill.get("rank"),
                         "price": pill.get("price") or pill.get("gold_cost"),
-                        "description": pill.get("description", "")
+                        "description": pill.get("description", ""),
+                        "data": pill
                     }
         
         # 从武器配置获取
@@ -500,7 +501,8 @@ class StorageRingService:
                         "type": weapon.get("type", "法器"),
                         "rank": weapon.get("rank"),
                         "price": weapon.get("price") or weapon.get("gold_cost"),
-                        "description": weapon.get("description", "")
+                        "description": weapon.get("description", ""),
+                        "data": weapon
                     }
         
         # 从通用物品配置获取
@@ -514,10 +516,63 @@ class StorageRingService:
                             "type": item_data.get("type", "其他"),
                             "rank": item_data.get("rank"),
                             "price": item_data.get("price") or item_data.get("gold_cost"),
-                            "description": item_data.get("description", "")
+                            "description": item_data.get("description", ""),
+                            "data": item_data
                         }
         
         return None
+    
+    def format_item_effects(self, data: Dict) -> str:
+        """
+        格式化物品效果
+        
+        Args:
+            data: 物品数据
+            
+        Returns:
+            效果描述字符串
+        """
+        effects = []
+        
+        # 检查各种效果
+        if data.get('effect'):
+            effect_data = data['effect']
+            if effect_data.get('add_hp'):
+                effects.append(f"恢复气血+{effect_data['add_hp']}")
+            if effect_data.get('add_experience'):
+                effects.append(f"修为+{effect_data['add_experience']}")
+            if effect_data.get('add_max_hp'):
+                effects.append(f"气血上限+{effect_data['add_max_hp']}")
+            if effect_data.get('add_spiritual_power'):
+                effects.append(f"灵力+{effect_data['add_spiritual_power']}")
+            if effect_data.get('breakthrough_rate'):
+                effects.append(f"突破成功率+{effect_data['breakthrough_rate']}%")
+        
+        # 装备属性
+        if data.get('magic_damage'):
+            effects.append(f"法伤+{data['magic_damage']}")
+        if data.get('physical_damage'):
+            effects.append(f"物伤+{data['physical_damage']}")
+        if data.get('magic_defense'):
+            effects.append(f"法防+{data['magic_defense']}")
+        if data.get('physical_defense'):
+            effects.append(f"物防+{data['physical_defense']}")
+        if data.get('mental_power'):
+            effects.append(f"精神力+{data['mental_power']}")
+        if data.get('max_hp') and not data.get('effect'):  # 避免重复显示
+            effects.append(f"气血上限+{data['max_hp']}")
+        if data.get('exp_multiplier'):
+            effects.append(f"修炼倍率+{int(data['exp_multiplier']*100)}%")
+        
+        # 旧版装备效果
+        if data.get('equip_effects'):
+            equip_effects = data['equip_effects']
+            if equip_effects.get('attack'):
+                effects.append(f"攻击+{equip_effects['attack']}")
+            if equip_effects.get('defense'):
+                effects.append(f"防御+{equip_effects['defense']}")
+        
+        return "、".join(effects) if effects else "无"
     
     def _load_config(self, filename: str) -> Optional[any]:
         """

@@ -247,10 +247,12 @@ class EquipmentService:
         if equipped_items.weapon:
             weapon = equipped_items.weapon
             lines.append(f"\n武器：{weapon.name}（{weapon.rank.value if hasattr(weapon.rank, 'value') else weapon.rank}）")
-            lines.append(f"  {weapon.description}")
             stats = self._format_stats(weapon.stats)
             if stats:
-                lines.append(f"  属性：{stats}")
+                lines.append(f"  效果：{stats}")
+            if weapon.description:
+                desc_short = weapon.description[:40] + "..." if len(weapon.description) > 40 else weapon.description
+                lines.append(f"  介绍：{desc_short}")
         else:
             lines.append("\n武器：无")
         
@@ -258,10 +260,12 @@ class EquipmentService:
         if equipped_items.armor:
             armor = equipped_items.armor
             lines.append(f"\n防具：{armor.name}（{armor.rank.value if hasattr(armor.rank, 'value') else armor.rank}）")
-            lines.append(f"  {armor.description}")
             stats = self._format_stats(armor.stats)
             if stats:
-                lines.append(f"  属性：{stats}")
+                lines.append(f"  效果：{stats}")
+            if armor.description:
+                desc_short = armor.description[:40] + "..." if len(armor.description) > 40 else armor.description
+                lines.append(f"  介绍：{desc_short}")
         else:
             lines.append("\n防具：无")
         
@@ -269,7 +273,12 @@ class EquipmentService:
         if equipped_items.main_technique:
             technique = equipped_items.main_technique
             lines.append(f"\n主功法：{technique.name}（{technique.rank.value if hasattr(technique.rank, 'value') else technique.rank}）")
-            lines.append(f"  {technique.description}")
+            stats = self._format_stats(technique.stats)
+            if stats:
+                lines.append(f"  效果：{stats}")
+            if technique.description:
+                desc_short = technique.description[:40] + "..." if len(technique.description) > 40 else technique.description
+                lines.append(f"  介绍：{desc_short}")
         else:
             lines.append("\n主功法：无")
         
@@ -278,6 +287,9 @@ class EquipmentService:
             lines.append(f"\n副功法（{len(equipped_items.techniques)}/3）：")
             for i, technique in enumerate(equipped_items.techniques, 1):
                 lines.append(f"  {i}. {technique.name}（{technique.rank.value if hasattr(technique.rank, 'value') else technique.rank}）")
+                stats = self._format_stats(technique.stats)
+                if stats:
+                    lines.append(f"     效果：{stats}")
         else:
             lines.append("\n副功法：无")
         

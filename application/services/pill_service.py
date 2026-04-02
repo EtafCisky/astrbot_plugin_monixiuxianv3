@@ -355,16 +355,50 @@ class PillService:
             
             lines.append(f"\n【{rank}】")
             for pill_name, count, pill_config in pills_by_rank[rank]:
+                lines.append(f"  {pill_name} × {count}")
+                
+                # 显示效果
+                effects = self._format_pill_effects(pill_config)
+                if effects:
+                    lines.append(f"    效果: {effects}")
+                
+                # 显示介绍
                 description = pill_config.get("description", "")
                 if description:
-                    lines.append(f"  {pill_name} × {count}")
-                    lines.append(f"    {description}")
-                else:
-                    lines.append(f"  {pill_name} × {count}")
+                    # 限制长度
+                    desc_short = description[:40] + "..." if len(description) > 40 else description
+                    lines.append(f"    介绍: {desc_short}")
         
         lines.append(f"\n💡 使用 服用丹药 <丹药名> 来使用丹药")
         
         return "\n".join(lines)
+    
+    def _format_pill_effects(self, pill_config: Dict) -> str:
+        """
+        格式化丹药效果
+        
+        Args:
+            pill_config: 丹药配置
+            
+        Returns:
+            效果描述字符串
+        """
+        effects = []
+        
+        if pill_config.get('effect'):
+            effect_data = pill_config['effect']
+            if effect_data.get('add_hp'):
+                effects.append(f"恢复气血+{effect_data['add_hp']}")
+            if effect_data.get('add_experience'):
+                effects.append(f"修为+{effect_data['add_experience']}")
+            if effect_data.get('add_max_hp'):
+                effects.append(f"气血上限+{effect_data['add_max_hp']}")
+            if effect_data.get('add_spiritual_power'):
+                effects.append(f"灵力+{effect_data['add_spiritual_power']}")
+            if effect_data.get('breakthrough_rate'):
+                effects.append(f"突破成功率+{effect_data['breakthrough_rate']}%")
+        
+        return "、".join(effects) if effects else ""
     
     def search_pills(self, user_id: str, keyword: str) -> List[Tuple[str, int]]:
         """
