@@ -348,10 +348,15 @@ class StorageRingHandler:
         
         lines.append("━━━━━━━━━━━━━━━\n")
         
-        # 显示description
-        if item_info.get('description'):
-            lines.append(f"效果：\n{item_info['description']}\n")
+        # 显示效果
+        if item_info.get('data'):
+            effects = self.storage_ring_service.format_item_effects(item_info['data'])
+            lines.append(f"效果：{effects}\n")
         else:
-            lines.append("效果：无描述\n")
+            lines.append("效果：无\n")
+        
+        # 显示介绍
+        if item_info.get('description'):
+            lines.append(f"介绍：{item_info['description']}\n")
         
         yield event.plain_result("".join(lines))

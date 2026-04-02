@@ -82,7 +82,8 @@ class PlayerFormatter:
         required_exp: int,
         combat_power: int,
         sect_name: str = "无宗门",
-        position_name: str = "散修"
+        position_name: str = "散修",
+        equipment_bonuses = None
     ) -> str:
         """
         格式化玩家信息
@@ -94,6 +95,7 @@ class PlayerFormatter:
             combat_power: 战力
             sect_name: 宗门名称
             position_name: 职位名称
+            equipment_bonuses: 装备属性加成
             
         Returns:
             格式化的消息
@@ -107,6 +109,20 @@ class PlayerFormatter:
         weapon_name = player.weapon if player.weapon else "无"
         armor_name = player.armor if player.armor else "无"
         technique_name = player.main_technique if player.main_technique else "无"
+        
+        # 计算总属性（基础属性 + 装备加成）
+        if equipment_bonuses:
+            total_magic_damage = player.magic_damage + equipment_bonuses.magic_damage
+            total_physical_damage = player.physical_damage + equipment_bonuses.physical_damage
+            total_magic_defense = player.magic_defense + equipment_bonuses.magic_defense
+            total_physical_defense = player.physical_defense + equipment_bonuses.physical_defense
+            total_mental_power = player.mental_power + equipment_bonuses.mental_power
+        else:
+            total_magic_damage = player.magic_damage
+            total_physical_damage = player.physical_damage
+            total_magic_defense = player.magic_defense
+            total_physical_defense = player.physical_defense
+            total_mental_power = player.mental_power
         
         msg = (
             f"📋 道友 {dao_hao} 的信息\n"
@@ -125,26 +141,45 @@ class PlayerFormatter:
             f"  修炼方式：{player.cultivation_type.value}\n"
             f"  状态：{player.state.value}\n"
             f"  寿命：{player.lifespan}\n"
-            f"  精神力：{player.mental_power}\n"
+            f"  精神力：{total_mental_power}"
         )
+        
+        # 显示装备加成
+        if equipment_bonuses and equipment_bonuses.mental_power > 0:
+            msg += f"({player.mental_power}+{equipment_bonuses.mental_power})"
+        msg += "\n"
         
         # 根据修炼类型添加不同属性
         if player.cultivation_type == CultivationType.SPIRITUAL:
-            msg += (
-                f"  灵气：{player.spiritual_qi}/{player.max_spiritual_qi}\n"
-                f"  法伤：{player.magic_damage}\n"
-                f"  物伤：{player.physical_damage}\n"
-                f"  法防：{player.magic_defense}\n"
-                f"  物防：{player.physical_defense}\n"
-            )
+            msg += f"  灵气：{player.spiritual_qi}/{player.max_spiritual_qi}\n"
+            msg += f"  法伤：{total_magic_damage}"
+            if equipment_bonuses and equipment_bonuses.magic_damage > 0:
+                msg += f"({player.magic_damage}+{equipment_bonuses.magic_damage})"
+            msg += f"\n  物伤：{total_physical_damage}"
+            if equipment_bonuses and equipment_bonuses.physical_damage > 0:
+                msg += f"({player.physical_damage}+{equipment_bonuses.physical_damage})"
+            msg += f"\n  法防：{total_magic_defense}"
+            if equipment_bonuses and equipment_bonuses.magic_defense > 0:
+                msg += f"({player.magic_defense}+{equipment_bonuses.magic_defense})"
+            msg += f"\n  物防：{total_physical_defense}"
+            if equipment_bonuses and equipment_bonuses.physical_defense > 0:
+                msg += f"({player.physical_defense}+{equipment_bonuses.physical_defense})"
+            msg += "\n"
         else:  # 体修
-            msg += (
-                f"  气血：{player.blood_qi}/{player.max_blood_qi}\n"
-                f"  物伤：{player.physical_damage}\n"
-                f"  法伤：{player.magic_damage}\n"
-                f"  物防：{player.physical_defense}\n"
-                f"  法防：{player.magic_defense}\n"
-            )
+            msg += f"  气血：{player.blood_qi}/{player.max_blood_qi}\n"
+            msg += f"  物伤：{total_physical_damage}"
+            if equipment_bonuses and equipment_bonuses.physical_damage > 0:
+                msg += f"({player.physical_damage}+{equipment_bonuses.physical_damage})"
+            msg += f"\n  法伤：{total_magic_damage}"
+            if equipment_bonuses and equipment_bonuses.magic_damage > 0:
+                msg += f"({player.magic_damage}+{equipment_bonuses.magic_damage})"
+            msg += f"\n  物防：{total_physical_defense}"
+            if equipment_bonuses and equipment_bonuses.physical_defense > 0:
+                msg += f"({player.physical_defense}+{equipment_bonuses.physical_defense})"
+            msg += f"\n  法防：{total_magic_defense}"
+            if equipment_bonuses and equipment_bonuses.magic_defense > 0:
+                msg += f"({player.magic_defense}+{equipment_bonuses.magic_defense})"
+            msg += "\n"
         
         msg += (
             f"\n"

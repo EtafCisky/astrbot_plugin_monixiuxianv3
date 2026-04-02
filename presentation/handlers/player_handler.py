@@ -111,8 +111,23 @@ class PlayerHandler:
             # 获取突破所需修为
             required_exp = self.player_service.get_required_exp(player)
             
-            # 计算战力
+            # 获取装备属性加成
+            from ...application.services.equipment_service import EquipmentService
+            equipment_service = EquipmentService(
+                self.player_service.player_repo.storage,
+                self.player_service.player_repo
+            )
+            equipment_bonuses = equipment_service.get_equipment_bonuses(player.user_id)
+            
+            # 计算战力（包含装备加成）
             combat_power = player.calculate_power()
+            combat_power += (
+                equipment_bonuses.magic_damage +
+                equipment_bonuses.physical_damage +
+                equipment_bonuses.magic_defense +
+                equipment_bonuses.physical_defense +
+                equipment_bonuses.mental_power // 10
+            )
             
             # 获取宗门信息（暂时使用默认值）
             sect_name = "无宗门"
@@ -125,7 +140,8 @@ class PlayerHandler:
                 required_exp,
                 combat_power,
                 sect_name,
-                position_name
+                position_name,
+                equipment_bonuses
             )
             
             yield event.plain_result(message)
@@ -1221,7 +1237,7 @@ class PlayerHandler:
             storage_ring_service = self.container.storage_ring_service()
             
             # 添加道具到储物戒
-            success, message = await storage_ring_service.store_item(
+            success, message = storage_ring_service.store_item(
                 target_user_id,
                 item_name,
                 count,
