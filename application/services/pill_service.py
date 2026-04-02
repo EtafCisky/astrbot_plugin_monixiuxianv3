@@ -236,6 +236,10 @@ class PillService:
         if "add_attack" in effects:
             calculated["add_attack"] = effects["add_attack"]
         
+        # 增加/减少寿命
+        if "add_lifespan" in effects:
+            calculated["add_lifespan"] = effects["add_lifespan"]
+        
         return calculated
     
     def _apply_accumulated_effects(
@@ -310,6 +314,16 @@ class PillService:
             attack_gain = total_effects["add_attack"]
             player.attack += attack_gain
             message_parts.append(f"⚔️ 攻击力：+{attack_gain}")
+        
+        # 增加/减少寿命
+        if "add_lifespan" in total_effects:
+            lifespan_change = total_effects["add_lifespan"]
+            player.lifespan += lifespan_change
+            if lifespan_change > 0:
+                message_parts.append(f"🕰️ 寿命增加：+{lifespan_change}年")
+            else:
+                message_parts.append(f"💀 寿命减少：{lifespan_change}年")
+            message_parts.append(f"⏳ 当前寿命：{player.lifespan}年")
         
         return "\n".join(message_parts)
     
@@ -388,15 +402,34 @@ class PillService:
         if pill_config.get('effect'):
             effect_data = pill_config['effect']
             if effect_data.get('add_hp'):
-                effects.append(f"恢复气血+{effect_data['add_hp']}")
+                hp_value = effect_data['add_hp']
+                if hp_value > 0:
+                    effects.append(f"恢复气血+{hp_value}")
+                else:
+                    effects.append(f"损失气血{hp_value}")
             if effect_data.get('add_experience'):
                 effects.append(f"修为+{effect_data['add_experience']}")
             if effect_data.get('add_max_hp'):
                 effects.append(f"气血上限+{effect_data['add_max_hp']}")
             if effect_data.get('add_spiritual_power'):
                 effects.append(f"灵力+{effect_data['add_spiritual_power']}")
+            if effect_data.get('add_mental_power'):
+                effects.append(f"精神力+{effect_data['add_mental_power']}")
+            if effect_data.get('add_attack'):
+                effects.append(f"攻击力+{effect_data['add_attack']}")
+            if effect_data.get('add_defense'):
+                effects.append(f"防御力+{effect_data['add_defense']}")
             if effect_data.get('breakthrough_rate'):
                 effects.append(f"突破成功率+{effect_data['breakthrough_rate']}%")
+            if effect_data.get('add_breakthrough_bonus'):
+                bonus_percent = effect_data['add_breakthrough_bonus'] * 100
+                effects.append(f"突破加成+{bonus_percent}%")
+            if effect_data.get('add_lifespan'):
+                lifespan_value = effect_data['add_lifespan']
+                if lifespan_value > 0:
+                    effects.append(f"寿命+{lifespan_value}年")
+                else:
+                    effects.append(f"寿命{lifespan_value}年")
         
         return "、".join(effects) if effects else ""
     

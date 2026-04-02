@@ -25,7 +25,7 @@ class MarketListing:
     
     def calculate_tax(self, buy_quantity: int = None) -> int:
         """
-        计算交易税（15%）
+        计算交易税（5%）
         
         Args:
             buy_quantity: 购买数量，如果为None则使用全部数量
@@ -34,11 +34,11 @@ class MarketListing:
             交易税金额
         """
         qty = buy_quantity if buy_quantity is not None else self.quantity
-        return int(self.price * qty * 0.15)
+        return int(self.price * qty * 0.05)
     
     def calculate_seller_revenue(self, buy_quantity: int = None) -> int:
         """
-        计算卖家实际收入（85%）
+        计算卖家实际收入（95%）
         
         Args:
             buy_quantity: 购买数量，如果为None则使用全部数量
