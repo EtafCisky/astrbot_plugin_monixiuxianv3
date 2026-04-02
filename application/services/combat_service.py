@@ -117,20 +117,19 @@ class CombatService:
         """计算装备提供的属性加成"""
         bonus = {"atk": 0, "defense": 0}
         
-        # 武器
-        if player.weapon:
-            weapon_data = self.config_manager.get_weapon_data(player.weapon)
-            if weapon_data:
-                bonus["atk"] += weapon_data.get("atk", 0)
-                bonus["atk"] += weapon_data.get("physical_damage", 0)
-                bonus["atk"] += weapon_data.get("magic_damage", 0)
+        # 使用装备服务获取装备加成
+        from .equipment_service import EquipmentService
+        equipment_service = EquipmentService(
+            self.player_repo.storage,
+            self.player_repo
+        )
+        equipment_bonuses = equipment_service.get_equipment_bonuses(player.user_id)
         
-        # 防具
-        if player.armor:
-            armor_data = self.config_manager.get_item_data(player.armor)
-            if armor_data:
-                bonus["defense"] += armor_data.get("physical_defense", 0)
-                bonus["defense"] += armor_data.get("magic_defense", 0)
+        # 攻击力 = 物理攻击 + 法术攻击
+        bonus["atk"] = equipment_bonuses.physical_damage + equipment_bonuses.magic_damage
+        
+        # 防御力 = 物理防御 + 法术防御
+        bonus["defense"] = equipment_bonuses.physical_defense + equipment_bonuses.magic_defense
         
         return bonus
     
