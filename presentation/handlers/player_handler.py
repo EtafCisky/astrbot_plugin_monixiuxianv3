@@ -113,9 +113,19 @@ class PlayerHandler:
             
             # 获取装备属性加成
             from ...application.services.equipment_service import EquipmentService
-            equipment_service = EquipmentService(
+            from ...infrastructure.repositories.equipment_repo import EquipmentRepository
+            from ...infrastructure.repositories.storage_ring_repo import StorageRingRepository
+            
+            equipment_repo = EquipmentRepository(
                 self.player_service.player_repo.storage,
-                self.player_service.player_repo
+                self.container.config_manager().config_dir
+            )
+            storage_ring_repo = StorageRingRepository(self.player_service.player_repo.storage)
+            
+            equipment_service = EquipmentService(
+                equipment_repo,
+                self.player_service.player_repo,
+                storage_ring_repo
             )
             equipment_bonuses = equipment_service.get_equipment_bonuses(player.user_id)
             

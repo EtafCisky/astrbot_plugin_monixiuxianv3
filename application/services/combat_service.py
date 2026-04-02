@@ -119,9 +119,16 @@ class CombatService:
         
         # 使用装备服务获取装备加成
         from .equipment_service import EquipmentService
+        from ...infrastructure.repositories.equipment_repo import EquipmentRepository
+        from ...infrastructure.repositories.storage_ring_repo import StorageRingRepository
+        
+        equipment_repo = EquipmentRepository(self.player_repo.storage, self.config_manager.config_dir)
+        storage_ring_repo = StorageRingRepository(self.player_repo.storage)
+        
         equipment_service = EquipmentService(
-            self.player_repo.storage,
-            self.player_repo
+            equipment_repo,
+            self.player_repo,
+            storage_ring_repo
         )
         equipment_bonuses = equipment_service.get_equipment_bonuses(player.user_id)
         
