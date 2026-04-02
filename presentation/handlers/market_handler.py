@@ -239,8 +239,8 @@ class MarketHandler:
 📦 物品：{details['item_name']}{qty_display}
 💰 单价：{details['unit_price']}灵石
 💵 总价：{details['total_price']}灵石
-📊 交易税：{details['tax']}灵石 (15%)
-👤 卖家收入：{details['seller_revenue']}灵石 (85%)
+📊 交易税：{details['tax']}灵石 (5%)
+👤 卖家收入：{details['seller_revenue']}灵石 (95%)
 🤝 卖家：{details['seller_name']}"""
                 yield event.plain_result(response)
             else:
