@@ -409,9 +409,9 @@ class XiuxianV3Plugin(Star):
             yield result
     
     @filter.command(Commands.UPGRADE_RING)
-    async def cmd_upgrade_ring(self, event: AstrMessageEvent, ring_name: str = ""):
-        """更换储物戒"""
-        async for result in self.storage_ring_handler.handle_upgrade_ring(event, ring_name):
+    async def cmd_upgrade_ring(self, event: AstrMessageEvent):
+        """升级储物戒"""
+        async for result in self.storage_ring_handler.handle_upgrade_ring(event):
             yield result
     
     @filter.command(Commands.SEARCH_ITEM)

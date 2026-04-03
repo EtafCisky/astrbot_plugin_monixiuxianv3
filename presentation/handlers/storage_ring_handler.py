@@ -67,7 +67,7 @@ class StorageRingHandler:
         lines.append(f"\n{'=' * 28}\n")
         lines.append(f"查看：查看物品 物品名\n")
         lines.append(f"搜索：搜索物品 关键词\n")
-        lines.append(f"升级：更换储物戒 储物戒名")
+        lines.append(f"升级：升级储物戒")
         
         yield event.plain_result("".join(lines))
     
@@ -216,50 +216,15 @@ class StorageRingHandler:
             yield event.plain_result(f"❌ {message}")
     
     @require_player
-    async def handle_upgrade_ring(self, event: AstrMessageEvent, player, ring_name: str = ""):
-        """升级/更换储物戒"""
+    async def handle_upgrade_ring(self, event: AstrMessageEvent, player):
+        """升级储物戒（自动升级到下一级）"""
         user_id = event.get_sender_id()
         
-        if not ring_name or ring_name.strip() == "":
-            # 显示可用的储物戒列表
-            rings = self.storage_ring_service.get_all_storage_rings()
-            current_ring = self.storage_ring_service.storage_ring_repo.get_storage_ring_name(user_id)
-            current_capacity = self.storage_ring_service.get_ring_capacity(current_ring)
-            
-            lines = [
-                f"=== 储物戒列表 ===\n",
-                f"当前：【{current_ring}】({current_capacity}格)\n",
-                f"━━━━━━━━━━━━━━━\n",
-            ]
-            
-            for ring in rings:
-                # 标记当前装备
-                if ring["name"] == current_ring:
-                    marker = "✓ "
-                elif ring["capacity"] <= current_capacity:
-                    marker = "✗ "  # 容量不高于当前的
-                else:
-                    marker = "  "
-                
-                level_name = self.storage_ring_service._format_required_level(ring["required_level_index"])
-                lines.append(
-                    f"{marker}【{ring['name']}】({ring['rank']})\n"
-                    f"    容量：{ring['capacity']}格 | 需求：{level_name}\n"
-                )
-            
-            lines.append(f"\n用法：更换储物戒 储物戒名")
-            lines.append("\n注：储物戒只能升级，不能卸下")
-            
-            yield event.plain_result("".join(lines))
-            return
-        
-        ring_name = ring_name.strip()
-        
-        # 升级储物戒
-        success, message = self.storage_ring_service.upgrade_ring(user_id, ring_name)
+        # 直接升级到下一级
+        success, message = self.storage_ring_service.upgrade_ring(user_id)
         
         if success:
-            yield event.plain_result(f"✅ {message}")
+            yield event.plain_result(message)
         else:
             yield event.plain_result(f"❌ {message}")
     

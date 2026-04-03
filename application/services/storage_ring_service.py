@@ -53,9 +53,6 @@ class StorageRingService:
         self.player_repo = player_repo
         self.config_manager = config_manager
         
-        # 初始化为空字典，防止未加载时出错
-        self.storage_rings = {}
-        
         # 加载储物戒配置
         self._load_storage_rings()
     
@@ -63,33 +60,18 @@ class StorageRingService:
         """加载储物戒配置"""
         config_path = self.config_manager.config_dir / "storage_rings.json"
         if config_path.exists():
-            try:
-                with open(config_path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    
-                # 调试：打印加载的数据类型
-                print(f"[DEBUG] 加载储物戒配置，类型: {type(data)}")
-                
-                # 确保加载的是字典而不是列表
+            with open(config_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # 确保加载的是字典格式
                 if isinstance(data, dict):
                     self.storage_rings = data
-                    print(f"[DEBUG] 成功加载 {len(data)} 个储物戒配置")
-                elif isinstance(data, list):
-                    # 如果是列表，转换为字典
-                    print(f"[DEBUG] 警告：配置文件是列表格式，正在转换为字典")
+                else:
+                    # 如果是列表格式，转换为字典
                     self.storage_rings = {}
                     for item in data:
                         if isinstance(item, dict) and "name" in item:
                             self.storage_rings[item["name"]] = item
-                    print(f"[DEBUG] 转换后有 {len(self.storage_rings)} 个储物戒配置")
-                else:
-                    print(f"[DEBUG] 错误：配置文件格式不正确，类型为 {type(data)}")
-                    self.storage_rings = {}
-            except Exception as e:
-                print(f"[DEBUG] 加载储物戒配置失败: {e}")
-                self.storage_rings = {}
         else:
-            print(f"[DEBUG] 配置文件不存在，使用默认配置")
             # 默认配置
             self.storage_rings = {
                 "基础储物戒": {
@@ -105,24 +87,12 @@ class StorageRingService:
     
     def get_storage_ring_config(self, ring_name: str) -> Optional[Dict]:
         """获取储物戒配置"""
-        # 确保 storage_rings 是字典
-        if not isinstance(self.storage_rings, dict):
-            return None
-        
-        config = self.storage_rings.get(ring_name)
-        
-        # 确保返回的配置是字典
-        if config and isinstance(config, dict):
-            return config
-        
-        return None
+        return self.storage_rings.get(ring_name)
     
     def get_ring_capacity(self, ring_name: str) -> int:
         """获取储物戒容量"""
         config = self.get_storage_ring_config(ring_name)
-        if config and isinstance(config, dict):
-            return config.get("capacity", 20)
-        return 20
+        return config.get("capacity", 20) if config else 20
     
     def get_used_slots(self, user_id: str) -> int:
         """获取已使用的格子数（每种物品占1格）"""
@@ -328,57 +298,72 @@ class StorageRingService:
     
     def upgrade_ring(
         self,
-        user_id: str,
-        new_ring_name: str
+        user_id: str
     ) -> Tuple[bool, str]:
-        """升级储物戒"""
-        # 检查储物戒是否存在
-        ring_config = self.get_storage_ring_config(new_ring_name)
-        if not ring_config:
-            return False, f"未找到储物戒：{new_ring_name}"
-        
-        if ring_config.get("type") != "storage_ring":
-            return False, f"【{new_ring_name}】不是储物戒类型的物品"
-        
+        """升级储物戒（自动升级到下一级）"""
         # 获取玩家信息
         player = self.player_repo.get_by_id(user_id)
         if not player:
             return False, "玩家不存在"
         
+        # 获取当前储物戒
+        current_ring = self.storage_ring_repo.get_storage_ring_name(user_id)
+        current_capacity = self.get_ring_capacity(current_ring)
+        
+        # 获取所有储物戒，按容量排序
+        all_rings = self.get_all_storage_rings()
+        
+        # 找到下一级储物戒
+        next_ring = None
+        for ring in all_rings:
+            if ring["capacity"] > current_capacity:
+                next_ring = ring
+                break
+        
+        if not next_ring:
+            return False, f"你的【{current_ring}】已经是最高级储物戒！"
+        
         # 检查境界要求
-        required_level = ring_config.get("required_level_index", 0)
+        required_level = next_ring["required_level_index"]
         if player.level_index < required_level:
             level_name = self._format_required_level(required_level)
-            return False, f"境界不足！【{new_ring_name}】（{ring_config.get('rank', '')}）需要达到【{level_name}】以上"
+            return False, (
+                f"境界不足！\n"
+                f"━━━━━━━━━━━━━━━\n"
+                f"下一级：【{next_ring['name']}】({next_ring['rank']})\n"
+                f"容量：{next_ring['capacity']}格\n"
+                f"需求境界：{level_name}\n"
+                f"你的境界：{self._format_required_level(player.level_index)}"
+            )
         
-        # 检查是否为升级
-        old_ring = self.storage_ring_repo.get_storage_ring_name(user_id)
-        old_capacity = self.get_ring_capacity(old_ring)
-        new_capacity = ring_config.get("capacity", 20)
+        # 检查灵石
+        price = next_ring["price"]
+        if player.gold < price:
+            return False, (
+                f"灵石不足！\n"
+                f"━━━━━━━━━━━━━━━\n"
+                f"下一级：【{next_ring['name']}】({next_ring['rank']})\n"
+                f"容量：{next_ring['capacity']}格\n"
+                f"需要：{price:,} 灵石\n"
+                f"当前：{player.gold:,} 灵石\n"
+                f"还差：{price - player.gold:,} 灵石"
+            )
         
-        if new_capacity <= old_capacity:
-            return False, f"【{new_ring_name}】容量（{new_capacity}格）不高于当前储物戒（{old_capacity}格），无法替换"
-        
-        # 检查价格
-        price = ring_config.get("price", 0)
-        if price > 0:
-            if player.gold < price:
-                return False, (
-                    f"❌ 灵石不足！\n"
-                    f"【{new_ring_name}】需要 {price:,} 灵石\n"
-                    f"你当前拥有：{player.gold:,} 灵石"
-                )
-            player.gold -= price
-            self.player_repo.save(player)
+        # 扣除灵石
+        player.gold -= price
+        self.player_repo.save(player)
         
         # 升级储物戒
-        self.storage_ring_repo.set_storage_ring_name(user_id, new_ring_name)
+        self.storage_ring_repo.set_storage_ring_name(user_id, next_ring["name"])
         
-        cost_msg = f"\n消耗灵石：{price:,}" if price > 0 else ""
         return True, (
-            f"储物戒升级成功！\n"
-            f"【{old_ring}】({old_capacity}格) → 【{new_ring_name}】({new_capacity}格)\n"
-            f"品级：{ring_config.get('rank', '未知')}{cost_msg}"
+            f"✨ 储物戒升级成功！\n"
+            f"━━━━━━━━━━━━━━━\n"
+            f"【{current_ring}】→【{next_ring['name']}】\n"
+            f"品级：{next_ring['rank']}\n"
+            f"容量：{current_capacity}格 → {next_ring['capacity']}格\n"
+            f"消耗：{price:,} 灵石\n"
+            f"剩余：{player.gold:,} 灵石"
         )
     
     def _format_required_level(self, level_index: int) -> str:
@@ -391,6 +376,7 @@ class StorageRingService:
     def get_all_storage_rings(self) -> List[Dict]:
         """获取所有可用的储物戒列表"""
         rings = []
+        
         # 确保 storage_rings 是字典
         if not isinstance(self.storage_rings, dict):
             return rings
@@ -399,7 +385,7 @@ class StorageRingService:
             # 确保 config 是字典
             if not isinstance(config, dict):
                 continue
-            
+                
             rings.append({
                 "name": name,
                 "rank": config.get("rank", ""),

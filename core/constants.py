@@ -27,7 +27,7 @@ class Commands:
     STORAGE_RING = "储物戒"
     DISCARD_ITEM = "丢弃"
     GIFT_ITEM = "赠予"
-    UPGRADE_RING = "更换储物戒"
+    UPGRADE_RING = "升级储物戒"
     SEARCH_ITEM = "搜索物品"
     VIEW_ITEM = "查看物品"  # 查看物品详细信息
     
