@@ -53,6 +53,9 @@ class StorageRingService:
         self.player_repo = player_repo
         self.config_manager = config_manager
         
+        # 初始化为空字典，防止未加载时出错
+        self.storage_rings = {}
+        
         # 加载储物戒配置
         self._load_storage_rings()
     
@@ -60,18 +63,33 @@ class StorageRingService:
         """加载储物戒配置"""
         config_path = self.config_manager.config_dir / "storage_rings.json"
         if config_path.exists():
-            with open(config_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    
+                # 调试：打印加载的数据类型
+                print(f"[DEBUG] 加载储物戒配置，类型: {type(data)}")
+                
                 # 确保加载的是字典而不是列表
                 if isinstance(data, dict):
                     self.storage_rings = data
-                else:
+                    print(f"[DEBUG] 成功加载 {len(data)} 个储物戒配置")
+                elif isinstance(data, list):
                     # 如果是列表，转换为字典
+                    print(f"[DEBUG] 警告：配置文件是列表格式，正在转换为字典")
                     self.storage_rings = {}
                     for item in data:
                         if isinstance(item, dict) and "name" in item:
                             self.storage_rings[item["name"]] = item
+                    print(f"[DEBUG] 转换后有 {len(self.storage_rings)} 个储物戒配置")
+                else:
+                    print(f"[DEBUG] 错误：配置文件格式不正确，类型为 {type(data)}")
+                    self.storage_rings = {}
+            except Exception as e:
+                print(f"[DEBUG] 加载储物戒配置失败: {e}")
+                self.storage_rings = {}
         else:
+            print(f"[DEBUG] 配置文件不存在，使用默认配置")
             # 默认配置
             self.storage_rings = {
                 "基础储物戒": {
@@ -87,12 +105,24 @@ class StorageRingService:
     
     def get_storage_ring_config(self, ring_name: str) -> Optional[Dict]:
         """获取储物戒配置"""
-        return self.storage_rings.get(ring_name)
+        # 确保 storage_rings 是字典
+        if not isinstance(self.storage_rings, dict):
+            return None
+        
+        config = self.storage_rings.get(ring_name)
+        
+        # 确保返回的配置是字典
+        if config and isinstance(config, dict):
+            return config
+        
+        return None
     
     def get_ring_capacity(self, ring_name: str) -> int:
         """获取储物戒容量"""
         config = self.get_storage_ring_config(ring_name)
-        return config.get("capacity", 20) if config else 20
+        if config and isinstance(config, dict):
+            return config.get("capacity", 20)
+        return 20
     
     def get_used_slots(self, user_id: str) -> int:
         """获取已使用的格子数（每种物品占1格）"""
