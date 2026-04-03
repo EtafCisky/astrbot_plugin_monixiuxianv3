@@ -212,19 +212,37 @@ class EquipmentRepository(BaseRepository[Equipment]):
         Returns:
             已装备物品对象，如果玩家不存在则返回None
         """
-        data = self.storage.get(self.filename, user_id)
-        if not data:
+        # 从玩家数据中获取装备名称
+        from ...infrastructure.repositories.player_repo import PlayerRepository
+        player_repo = PlayerRepository(self.storage)
+        player = player_repo.get_by_id(user_id)
+        
+        if not player:
             return None
         
-        # 解析装备数据
-        equipped_data = {
-            "weapon": data.get("weapon"),
-            "armor": data.get("armor"),
-            "main_technique": data.get("main_technique"),
-            "techniques": data.get("techniques", []),
-        }
+        # 根据装备名称查找装备对象
+        weapon = None
+        armor = None
+        main_technique = None
         
-        return EquippedItems.from_dict(equipped_data)
+        if player.weapon:
+            weapon = self.get_equipment_by_name(player.weapon)
+        
+        if player.armor:
+            armor = self.get_equipment_by_name(player.armor)
+        
+        if player.main_technique:
+            main_technique = self.get_equipment_by_name(player.main_technique)
+        
+        # 创建EquippedItems对象
+        equipped_items = EquippedItems(
+            weapon=weapon,
+            armor=armor,
+            main_technique=main_technique,
+            techniques=[]  # 暂时不支持副功法
+        )
+        
+        return equipped_items
     
     def save_equipped_items(self, user_id: str, equipped_items: EquippedItems) -> bool:
         """
