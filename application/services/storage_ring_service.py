@@ -61,7 +61,16 @@ class StorageRingService:
         config_path = self.config_manager.config_dir / "storage_rings.json"
         if config_path.exists():
             with open(config_path, 'r', encoding='utf-8') as f:
-                self.storage_rings = json.load(f)
+                data = json.load(f)
+                # 确保加载的是字典而不是列表
+                if isinstance(data, dict):
+                    self.storage_rings = data
+                else:
+                    # 如果是列表，转换为字典
+                    self.storage_rings = {}
+                    for item in data:
+                        if isinstance(item, dict) and "name" in item:
+                            self.storage_rings[item["name"]] = item
         else:
             # 默认配置
             self.storage_rings = {
@@ -352,7 +361,15 @@ class StorageRingService:
     def get_all_storage_rings(self) -> List[Dict]:
         """获取所有可用的储物戒列表"""
         rings = []
+        # 确保 storage_rings 是字典
+        if not isinstance(self.storage_rings, dict):
+            return rings
+        
         for name, config in self.storage_rings.items():
+            # 确保 config 是字典
+            if not isinstance(config, dict):
+                continue
+            
             rings.append({
                 "name": name,
                 "rank": config.get("rank", ""),
