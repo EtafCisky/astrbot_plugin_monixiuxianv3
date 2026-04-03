@@ -255,15 +255,22 @@ class EquipmentRepository(BaseRepository[Equipment]):
         Returns:
             是否保存成功
         """
-        equipped_data = {
-            "user_id": user_id,
-            "weapon": equipped_items.weapon.to_dict() if equipped_items.weapon else None,
-            "armor": equipped_items.armor.to_dict() if equipped_items.armor else None,
-            "main_technique": equipped_items.main_technique.to_dict() if equipped_items.main_technique else None,
-            "techniques": [t.to_dict() for t in equipped_items.techniques] if equipped_items.techniques else []
-        }
+        # 更新玩家模型中的装备字段
+        from ...infrastructure.repositories.player_repo import PlayerRepository
+        player_repo = PlayerRepository(self.storage)
+        player = player_repo.get_by_id(user_id)
         
-        self.storage.set(self.filename, user_id, equipped_data)
+        if not player:
+            return False
+        
+        # 更新装备名称
+        player.weapon = equipped_items.weapon.name if equipped_items.weapon else None
+        player.armor = equipped_items.armor.name if equipped_items.armor else None
+        player.main_technique = equipped_items.main_technique.name if equipped_items.main_technique else None
+        
+        # 保存玩家数据
+        player_repo.save(player)
+        
         return True
     
     def equip_item(self, user_id: str, equipment: Equipment, slot: str) -> bool:
@@ -278,25 +285,28 @@ class EquipmentRepository(BaseRepository[Equipment]):
         Returns:
             是否装备成功
         """
-        equipped_items = self.get_equipped_items(user_id)
-        if not equipped_items:
+        # 直接更新玩家模型
+        from ...infrastructure.repositories.player_repo import PlayerRepository
+        player_repo = PlayerRepository(self.storage)
+        player = player_repo.get_by_id(user_id)
+        
+        if not player:
             return False
         
         if slot == "weapon":
-            equipped_items.weapon = equipment
+            player.weapon = equipment.name
         elif slot == "armor":
-            equipped_items.armor = equipment
+            player.armor = equipment.name
         elif slot == "main_technique":
-            equipped_items.main_technique = equipment
+            player.main_technique = equipment.name
         elif slot == "technique":
-            if len(equipped_items.techniques) < 3:
-                equipped_items.techniques.append(equipment)
-            else:
-                return False  # 副功法已满
+            # 副功法暂不支持
+            return False
         else:
             return False  # 无效槽位
         
-        return self.save_equipped_items(user_id, equipped_items)
+        player_repo.save(player)
+        return True
     
     def unequip_item(self, user_id: str, slot: str, technique_index: Optional[int] = None) -> Optional[Equipment]:
         """
@@ -310,28 +320,37 @@ class EquipmentRepository(BaseRepository[Equipment]):
         Returns:
             被卸下的装备对象，如果失败则返回None
         """
+        # 获取当前装备
         equipped_items = self.get_equipped_items(user_id)
         if not equipped_items:
+            return None
+        
+        # 直接更新玩家模型
+        from ...infrastructure.repositories.player_repo import PlayerRepository
+        player_repo = PlayerRepository(self.storage)
+        player = player_repo.get_by_id(user_id)
+        
+        if not player:
             return None
         
         unequipped = None
         
         if slot == "weapon":
             unequipped = equipped_items.weapon
-            equipped_items.weapon = None
+            player.weapon = None
         elif slot == "armor":
             unequipped = equipped_items.armor
-            equipped_items.armor = None
+            player.armor = None
         elif slot == "main_technique":
             unequipped = equipped_items.main_technique
-            equipped_items.main_technique = None
-        elif slot == "technique" and technique_index is not None:
-            if 0 <= technique_index < len(equipped_items.techniques):
-                unequipped = equipped_items.techniques.pop(technique_index)
+            player.main_technique = None
+        elif slot == "technique":
+            # 副功法暂不支持
+            return None
         else:
             return None
         
         if unequipped:
-            self.save_equipped_items(user_id, equipped_items)
+            player_repo.save(player)
         
         return unequipped
