@@ -31,8 +31,7 @@ class ShopHandler:
                 shop_id="pill_pavilion",
                 shop_name="丹阁",
                 item_filter=pill_filter,
-                count=10,
-                refresh_hours=6
+                count=10
             )
             
             display = self.shop_service.format_shop_display(shop)
@@ -55,8 +54,7 @@ class ShopHandler:
                 shop_id="weapon_pavilion",
                 shop_name="器阁",
                 item_filter=weapon_filter,
-                count=10,
-                refresh_hours=6
+                count=10
             )
             
             display = self.shop_service.format_shop_display(shop)
@@ -76,8 +74,7 @@ class ShopHandler:
                 shop_id="general_shop",
                 shop_name="百宝阁",
                 item_filter=None,
-                count=15,
-                refresh_hours=6
+                count=15
             )
             
             display = self.shop_service.format_shop_display(shop)
@@ -131,8 +128,38 @@ class ShopHandler:
                 return
             
             # 尝试从所有商店购买
+            # 先刷新所有商店，确保数据是最新的
+            def pill_filter(item):
+                return item['type'] in ['pill', 'exp_pill', 'utility_pill']
+            
+            def weapon_filter(item):
+                return item['type'] in ['weapon', 'armor', 'accessory']
+            
+            # 刷新三个商店
+            self.shop_service.ensure_shop_refreshed(
+                shop_id="pill_pavilion",
+                shop_name="丹阁",
+                item_filter=pill_filter,
+                count=10
+            )
+            
+            self.shop_service.ensure_shop_refreshed(
+                shop_id="weapon_pavilion",
+                shop_name="器阁",
+                item_filter=weapon_filter,
+                count=10
+            )
+            
+            self.shop_service.ensure_shop_refreshed(
+                shop_id="general_shop",
+                shop_name="百宝阁",
+                item_filter=None,
+                count=15
+            )
+            
             shop_ids = ["pill_pavilion", "weapon_pavilion", "general_shop"]
             
+            last_error = None
             for shop_id in shop_ids:
                 try:
                     # 尝试从当前商店购买
@@ -147,12 +174,27 @@ class ShopHandler:
                         yield event.plain_result(f"✅ {message}")
                         return
                         
-                except Exception:
-                    # 如果在这个商店找不到，继续尝试下一个商店
+                except XiuxianException as e:
+                    # 记录最后一个错误
+                    error_msg = str(e)
+                    # 如果是"没有找到"错误，继续尝试下一个商店
+                    if "没有找到" in error_msg:
+                        continue
+                    # 其他错误（如灵石不足、库存不足）直接返回
+                    else:
+                        last_error = error_msg
+                        break
+                except Exception as e:
+                    # 其他未知错误
+                    last_error = str(e)
                     continue
             
-            # 所有商店都找不到
-            yield event.plain_result(f"❌ 没有找到【{item_name}】，请检查物品名称或等待刷新")
+            # 如果有具体错误，显示错误信息
+            if last_error:
+                yield event.plain_result(f"❌ {last_error}")
+            else:
+                # 所有商店都找不到
+                yield event.plain_result(f"❌ 没有找到【{item_name}】，请检查物品名称或等待刷新")
                 
         except XiuxianException as e:
             yield event.plain_result(f"❌ {str(e)}")

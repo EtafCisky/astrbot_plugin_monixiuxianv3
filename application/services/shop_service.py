@@ -7,6 +7,8 @@ import random
 import time
 from typing import List, Dict, Optional, Tuple
 
+from astrbot.api import logger
+
 from ...domain.models.shop import Shop, ShopItem
 from ...domain.models.player import Player
 from ...infrastructure.repositories.shop_repo import ShopRepository
@@ -233,7 +235,7 @@ class ShopService:
         shop_name: str,
         item_filter=None, 
         count: int = 10,
-        refresh_hours: int = 6
+        refresh_hours: int = None
     ) -> Shop:
         """
         确保商店已刷新
@@ -243,11 +245,17 @@ class ShopService:
             shop_name: 商店名称
             item_filter: 物品过滤函数
             count: 商品数量
-            refresh_hours: 刷新间隔（小时）
+            refresh_hours: 刷新间隔（小时），None则从配置读取
             
         Returns:
             商店对象
         """
+        # 如果没有指定刷新时间，从配置读取
+        if refresh_hours is None:
+            refresh_hours = self.config_manager.settings.values.pavilion_refresh_hours
+        
+        logger.debug(f"【商店刷新】商店ID: {shop_id}, 刷新间隔: {refresh_hours}小时")
+        
         last_refresh, items_data = self.shop_repo.get_shop_data(shop_id)
         current_time = int(time.time())
         
@@ -255,15 +263,22 @@ class ShopService:
         should_refresh = False
         if not items_data:
             should_refresh = True
+            logger.debug(f"【商店刷新】商店 {shop_id} 无数据，需要刷新")
         elif refresh_hours > 0:
             elapsed = current_time - last_refresh
             should_refresh = elapsed >= (refresh_hours * 3600)
+            logger.debug(f"【商店刷新】商店 {shop_id} 距上次刷新 {elapsed}秒，需要刷新: {should_refresh}")
         
         if should_refresh:
             # 生成新商品
             items_data = self.generate_shop_items(item_filter, count)
+            logger.info(f"【商店刷新】商店 {shop_id} 刷新完成，生成 {len(items_data)} 个商品")
+            if items_data:
+                logger.debug(f"【商店刷新】商品列表: {[item['name'] for item in items_data]}")
             self.shop_repo.update_shop_data(shop_id, current_time, items_data)
             last_refresh = current_time
+        else:
+            logger.debug(f"【商店刷新】商店 {shop_id} 无需刷新，当前有 {len(items_data)} 个商品")
         
         # 构建商店对象
         shop_items = [
@@ -442,6 +457,13 @@ class ShopService:
         
         # 查找商品
         last_refresh, items_data = self.shop_repo.get_shop_data(shop_id)
+        
+        # 调试日志
+        logger.debug(f"【商店购买】商店ID: {shop_id}, 查找物品: {item_name}")
+        logger.debug(f"【商店购买】商店物品数量: {len(items_data)}")
+        if items_data:
+            logger.debug(f"【商店购买】商店物品列表: {[item.get('name') for item in items_data]}")
+        
         target_item = None
         for item in items_data:
             if item['name'] == item_name and item.get('stock', 0) > 0:
@@ -449,6 +471,7 @@ class ShopService:
                 break
         
         if not target_item:
+            logger.debug(f"【商店购买】在商店 {shop_id} 中未找到物品 {item_name}")
             raise BusinessException(f"没有找到【{item_name}】，请检查物品名称或等待刷新")
         
         # 检查库存
