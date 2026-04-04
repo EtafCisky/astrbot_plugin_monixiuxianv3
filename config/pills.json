@@ -10,9 +10,9 @@
     "required_level_index": 9,
     "target_level_index": 10,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.4,
+    "breakthrough_bonus": 0.3,
     "effect": {
-      "breakthrough_rate": 40
+      "breakthrough_rate": 30
     },
     "shop_weight": 500
   },
@@ -27,9 +27,9 @@
     "required_level_index": 10,
     "target_level_index": 11,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.5,
+    "breakthrough_bonus": 0.4,
     "effect": {
-      "breakthrough_rate": 50
+      "breakthrough_rate": 40
     },
     "shop_weight": 300
   },
@@ -44,9 +44,9 @@
     "required_level_index": 11,
     "target_level_index": 12,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.6,
+    "breakthrough_bonus": 0.5,
     "effect": {
-      "breakthrough_rate": 60
+      "breakthrough_rate": 50
     },
     "shop_weight": 200
   },
@@ -61,9 +61,9 @@
     "required_level_index": 12,
     "target_level_index": 13,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.7,
+    "breakthrough_bonus": 0.5,
     "effect": {
-      "breakthrough_rate": 70
+      "breakthrough_rate": 50
     },
     "shop_weight": 150
   },
@@ -78,9 +78,9 @@
     "required_level_index": 13,
     "target_level_index": 14,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.7,
+    "breakthrough_bonus": 0.55,
     "effect": {
-      "breakthrough_rate": 70
+      "breakthrough_rate": 55
     },
     "shop_weight": 100
   },
@@ -95,9 +95,9 @@
     "required_level_index": 14,
     "target_level_index": 15,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.72,
+    "breakthrough_bonus": 0.6,
     "effect": {
-      "breakthrough_rate": 72
+      "breakthrough_rate": 60
     },
     "shop_weight": 80
   },
@@ -112,9 +112,9 @@
     "required_level_index": 15,
     "target_level_index": 16,
     "max_success_rate": 1.0,
-    "breakthrough_bonus": 0.8,
+    "breakthrough_bonus": 0.55,
     "effect": {
-      "breakthrough_rate": 80
+      "breakthrough_rate": 55
     },
     "shop_weight": 50
   },
@@ -129,9 +129,9 @@
     "required_level_index": 16,
     "target_level_index": 17,
     "max_success_rate": 0.98,
-    "breakthrough_bonus": 0.76,
+    "breakthrough_bonus": 0.58,
     "effect": {
-      "breakthrough_rate": 76
+      "breakthrough_rate": 58
     },
     "shop_weight": 40
   },
@@ -146,9 +146,9 @@
     "required_level_index": 17,
     "target_level_index": 18,
     "max_success_rate": 0.96,
-    "breakthrough_bonus": 0.74,
+    "breakthrough_bonus": 0.6,
     "effect": {
-      "breakthrough_rate": 74
+      "breakthrough_rate": 60
     },
     "shop_weight": 35
   },
@@ -163,9 +163,9 @@
     "required_level_index": 18,
     "target_level_index": 19,
     "max_success_rate": 0.95,
-    "breakthrough_bonus": 0.77,
+    "breakthrough_bonus": 0.6,
     "effect": {
-      "breakthrough_rate": 77
+      "breakthrough_rate": 60
     },
     "shop_weight": 50
   },
@@ -180,9 +180,9 @@
     "required_level_index": 19,
     "target_level_index": 20,
     "max_success_rate": 0.92,
-    "breakthrough_bonus": 0.77,
+    "breakthrough_bonus": 0.62,
     "effect": {
-      "breakthrough_rate": 77
+      "breakthrough_rate": 62
     },
     "shop_weight": 30
   },
@@ -197,9 +197,9 @@
     "required_level_index": 20,
     "target_level_index": 21,
     "max_success_rate": 0.9,
-    "breakthrough_bonus": 0.78,
+    "breakthrough_bonus": 0.65,
     "effect": {
-      "breakthrough_rate": 78
+      "breakthrough_rate": 65
     },
     "shop_weight": 25
   },
@@ -214,9 +214,9 @@
     "required_level_index": 21,
     "target_level_index": 22,
     "max_success_rate": 0.9,
-    "breakthrough_bonus": 0.8,
+    "breakthrough_bonus": 0.35,
     "effect": {
-      "breakthrough_rate": 80
+      "breakthrough_rate": 35
     },
     "shop_weight": 20
   },
@@ -231,9 +231,9 @@
     "required_level_index": 22,
     "target_level_index": 23,
     "max_success_rate": 0.88,
-    "breakthrough_bonus": 0.79,
+    "breakthrough_bonus": 0.38,
     "effect": {
-      "breakthrough_rate": 79
+      "breakthrough_rate": 38
     },
     "shop_weight": 15
   },
@@ -243,14 +243,14 @@
     "type": "pill",
     "subtype": "breakthrough",
     "rank": "帝品",
-    "description": "破碎虚空的丹药，辅助炼虚中期修士突破至后期",
+    "description": "破碎虚空的丹药，辅助炼虚中期修士突破至中期",
     "price": 4000000,
     "required_level_index": 23,
     "target_level_index": 24,
     "max_success_rate": 0.85,
-    "breakthrough_bonus": 0.77,
+    "breakthrough_bonus": 0.4,
     "effect": {
-      "breakthrough_rate": 77
+      "breakthrough_rate": 40
     },
     "shop_weight": 12
   },
@@ -265,9 +265,9 @@
     "required_level_index": 24,
     "target_level_index": 25,
     "max_success_rate": 0.8,
-    "breakthrough_bonus": 0.73,
+    "breakthrough_bonus": 0.4,
     "effect": {
-      "breakthrough_rate": 73
+      "breakthrough_rate": 40
     },
     "shop_weight": 20
   },
@@ -282,9 +282,9 @@
     "required_level_index": 25,
     "target_level_index": 26,
     "max_success_rate": 0.78,
-    "breakthrough_bonus": 0.72,
+    "breakthrough_bonus": 0.42,
     "effect": {
-      "breakthrough_rate": 72
+      "breakthrough_rate": 42
     },
     "shop_weight": 10
   },
@@ -299,9 +299,9 @@
     "required_level_index": 26,
     "target_level_index": 27,
     "max_success_rate": 0.75,
-    "breakthrough_bonus": 0.7,
+    "breakthrough_bonus": 0.45,
     "effect": {
-      "breakthrough_rate": 70
+      "breakthrough_rate": 45
     },
     "shop_weight": 8
   },
@@ -316,9 +316,9 @@
     "required_level_index": 27,
     "target_level_index": 28,
     "max_success_rate": 0.7,
-    "breakthrough_bonus": 0.66,
+    "breakthrough_bonus": 0.3,
     "effect": {
-      "breakthrough_rate": 66
+      "breakthrough_rate": 30
     },
     "shop_weight": 10
   },
@@ -333,9 +333,9 @@
     "required_level_index": 28,
     "target_level_index": 29,
     "max_success_rate": 0.65,
-    "breakthrough_bonus": 0.62,
+    "breakthrough_bonus": 0.33,
     "effect": {
-      "breakthrough_rate": 62
+      "breakthrough_rate": 33
     },
     "shop_weight": 8
   },
@@ -350,9 +350,9 @@
     "required_level_index": 29,
     "target_level_index": 30,
     "max_success_rate": 0.6,
-    "breakthrough_bonus": 0.58,
+    "breakthrough_bonus": 0.35,
     "effect": {
-      "breakthrough_rate": 58
+      "breakthrough_rate": 35
     },
     "shop_weight": 6
   },
@@ -367,9 +367,9 @@
     "required_level_index": 30,
     "target_level_index": 31,
     "max_success_rate": 0.6,
-    "breakthrough_bonus": 0.59,
+    "breakthrough_bonus": 0.4,
     "effect": {
-      "breakthrough_rate": 59
+      "breakthrough_rate": 40
     },
     "shop_weight": 10
   },
@@ -384,9 +384,9 @@
     "required_level_index": 31,
     "target_level_index": 32,
     "max_success_rate": 0.5,
-    "breakthrough_bonus": 0.499,
+    "breakthrough_bonus": 0.25,
     "effect": {
-      "breakthrough_rate": 49.9
+      "breakthrough_rate": 25
     },
     "shop_weight": 5
   },
@@ -401,9 +401,9 @@
     "required_level_index": 32,
     "target_level_index": 33,
     "max_success_rate": 0.3,
-    "breakthrough_bonus": 0.2995,
+    "breakthrough_bonus": 0.15,
     "effect": {
-      "breakthrough_rate": 29.95
+      "breakthrough_rate": 15
     },
     "shop_weight": 5
   },
@@ -418,9 +418,9 @@
     "required_level_index": 33,
     "target_level_index": 34,
     "max_success_rate": 0.1,
-    "breakthrough_bonus": 0.0998,
+    "breakthrough_bonus": 0.1,
     "effect": {
-      "breakthrough_rate": 9.98
+      "breakthrough_rate": 10
     },
     "shop_weight": 100
   },
@@ -435,9 +435,9 @@
     "required_level_index": 34,
     "target_level_index": 35,
     "max_success_rate": 0.05,
-    "breakthrough_bonus": 0.0499,
+    "breakthrough_bonus": 0.05,
     "effect": {
-      "breakthrough_rate": 4.99
+      "breakthrough_rate": 5
     },
     "shop_weight": 1
   }
