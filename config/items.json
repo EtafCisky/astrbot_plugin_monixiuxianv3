@@ -2044,5 +2044,285 @@
     "mental_power": 550,
     "exp_multiplier": 0.7,
     "shop_weight": 20
+  },
+  "5001": {
+    "name": "灵草",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "普通的灵草，可用于炼丹或炼器。",
+    "price": 50,
+    "shop_weight": 500
+  },
+  "5002": {
+    "name": "精铁",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "品质不错的精铁，炼器的基础材料。",
+    "price": 80,
+    "shop_weight": 400
+  },
+  "5003": {
+    "name": "灵石碎片",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "灵石的碎片，蕴含微弱灵气。",
+    "price": 30,
+    "shop_weight": 600
+  },
+  "5004": {
+    "name": "玄铁",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "坚硬的玄铁，炼制法器的上等材料。",
+    "price": 300,
+    "shop_weight": 300
+  },
+  "5005": {
+    "name": "灵兽毛皮",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "灵兽的毛皮，可用于制作防具。",
+    "price": 250,
+    "shop_weight": 250
+  },
+  "5006": {
+    "name": "秘境精华",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "秘境中凝聚的精华，蕴含浓郁灵气。",
+    "price": 500,
+    "shop_weight": 150
+  },
+  "5007": {
+    "name": "星辰石",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "蕴含星辰之力的宝石，极为珍贵。",
+    "price": 1000,
+    "shop_weight": 100
+  },
+  "5008": {
+    "name": "灵兽内丹",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "灵兽体内凝聚的内丹，蕴含强大能量。",
+    "price": 1500,
+    "shop_weight": 80
+  },
+  "5101": {
+    "name": "百年灵芝",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "生长百年的灵芝，药效温和。",
+    "price": 500,
+    "shop_weight": 200
+  },
+  "5102": {
+    "name": "紫玉参",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "紫色的玉参，滋补效果极佳。",
+    "price": 600,
+    "shop_weight": 180
+  },
+  "5103": {
+    "name": "青莲子",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "青莲的种子，蕴含生机。",
+    "price": 550,
+    "shop_weight": 190
+  },
+  "5104": {
+    "name": "赤血果",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "赤红如血的果实，能增强气血。",
+    "price": 800,
+    "shop_weight": 120
+  },
+  "5201": {
+    "name": "千年灵芝",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长千年的灵芝，药效惊人。",
+    "price": 3000,
+    "shop_weight": 100
+  },
+  "5202": {
+    "name": "九转仙草",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "传说中的仙草，可起死回生。",
+    "price": 3500,
+    "shop_weight": 90
+  },
+  "5203": {
+    "name": "龙血果",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "蕴含龙族血脉之力的果实。",
+    "price": 4000,
+    "shop_weight": 80
+  },
+  "5204": {
+    "name": "凤凰羽",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "凤凰的羽毛，蕴含涅槃之力。",
+    "price": 4500,
+    "shop_weight": 70
+  },
+  "5205": {
+    "name": "玄冰莲",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "生长在极寒之地的冰莲，寒气逼人。",
+    "price": 5000,
+    "shop_weight": 60
+  },
+  "5301": {
+    "name": "万年灵芝王",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "万年灵芝之王，药效通天。",
+    "price": 15000,
+    "shop_weight": 50
+  },
+  "5302": {
+    "name": "九天息壤",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "传说中的神土，可孕育万物。",
+    "price": 18000,
+    "shop_weight": 45
+  },
+  "5303": {
+    "name": "太阳神果",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "吸收太阳精华而生的神果。",
+    "price": 20000,
+    "shop_weight": 40
+  },
+  "5304": {
+    "name": "太阴神花",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "吸收太阴精华而生的神花。",
+    "price": 20000,
+    "shop_weight": 40
+  },
+  "5305": {
+    "name": "混沌青莲",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "混沌初开时诞生的青莲，至宝。",
+    "price": 50000,
+    "shop_weight": 25
+  },
+  "5306": {
+    "name": "不死神药",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "传说中的不死神药，可延寿万年。",
+    "price": 100000,
+    "shop_weight": 15
+  },
+  "5401": {
+    "name": "寒铁精",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "寒铁提炼的精华，炼器佳品。",
+    "price": 400,
+    "shop_weight": 200
+  },
+  "5402": {
+    "name": "赤铜矿",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "赤色的铜矿，质地坚韧。",
+    "price": 350,
+    "shop_weight": 220
+  },
+  "5403": {
+    "name": "灵木芯",
+    "type": "材料",
+    "rank": "凡品",
+    "description": "灵木的核心，蕴含生机。",
+    "price": 450,
+    "shop_weight": 180
+  },
+  "5501": {
+    "name": "紫金沙",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "紫金色的沙粒，炼器圣材。",
+    "price": 2000,
+    "shop_weight": 100
+  },
+  "5502": {
+    "name": "星辉晶砂",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "闪耀星辉的晶砂，极为罕见。",
+    "price": 2200,
+    "shop_weight": 90
+  },
+  "5503": {
+    "name": "赤炎石",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "蕴含赤炎之力的宝石。",
+    "price": 2500,
+    "shop_weight": 80
+  },
+  "5504": {
+    "name": "月光粉尘",
+    "type": "材料",
+    "rank": "珍品",
+    "description": "月光凝聚的粉尘，神秘莫测。",
+    "price": 3000,
+    "shop_weight": 60
+  },
+  "5601": {
+    "name": "玄冰之核",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "万年玄冰的核心，寒气刺骨。",
+    "price": 12000,
+    "shop_weight": 50
+  },
+  "5602": {
+    "name": "龙骨髓",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "真龙骨骼中的精髓，至宝。",
+    "price": 15000,
+    "shop_weight": 45
+  },
+  "5603": {
+    "name": "凤凰真羽",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "凤凰涅槃后留下的真羽。",
+    "price": 18000,
+    "shop_weight": 40
+  },
+  "5604": {
+    "name": "星辰陨铁",
+    "type": "材料",
+    "rank": "圣品",
+    "description": "从星辰坠落的陨铁，坚不可摧。",
+    "price": 20000,
+    "shop_weight": 35
+  },
+  "5605": {
+    "name": "混沌神石",
+    "type": "材料",
+    "rank": "帝品",
+    "description": "混沌中孕育的神石，可炼制仙器。",
+    "price": 50000,
+    "shop_weight": 20
   }
 }
