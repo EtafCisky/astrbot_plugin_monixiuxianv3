@@ -44,8 +44,8 @@ class CultivationService:
         # 开始闭关
         player.start_cultivation()
         
-        # 保存玩家状态（JSONStorage 自动处理原子写入）
-        self.player_repo.save(player)
+        # 保存玩家状态（强制保存状态，因为这是明确的状态变更）
+        self.player_repo.save(player, force_state=True)
     
     def end_cultivation(self, player: Player) -> CultivationResult:
         """
@@ -72,9 +72,9 @@ class CultivationService:
             # 结束闭关，获取时长
             duration_minutes = player.end_cultivation()
         except ValueError as e:
-            # 如果是数据异常（闭关时间丢失），保存重置后的状态
+            # 如果是数据异常（闭关时间丢失），强制保存重置后的状态
             if "数据异常" in str(e):
-                self.player_repo.save(player)
+                self.player_repo.save(player, force_state=True)
             # 重新抛出异常让上层处理
             raise
         
@@ -93,8 +93,8 @@ class CultivationService:
         # 更新玩家修为
         player.add_experience(gained_exp)
         
-        # 保存玩家状态（JSONStorage 自动处理原子写入）
-        self.player_repo.save(player)
+        # 保存玩家状态（强制保存状态，因为这是明确的状态变更）
+        self.player_repo.save(player, force_state=True)
         
         return CultivationResult(
             duration_minutes=duration_minutes,

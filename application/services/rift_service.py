@@ -366,10 +366,10 @@ class RiftService:
                         synthesis_messages.append(f"✨ 恭喜！你集齐了残篇，自动合成了【{tier}】功法《{technique_name}》！")
                         break
         
-        # 保存玩家（包含所有更新）
+        # 保存玩家（包含所有更新，但不强制保存状态，因为状态会在下一步单独更新）
         self.player_repo.save(player)
         
-        # 重置状态
+        # 重置状态（直接操作存储，绕过保护机制）
         self.player_repo.update_player_state(user_id, state=PlayerState.IDLE.value, extra_data=None)
         
         # 更新悬赏进度

@@ -89,6 +89,11 @@ class CultivationHandler:
         except InvalidStateException:
             yield event.plain_result("❌ 道友当前并未闭关，无需出关。")
         except ValueError as e:
-            yield event.plain_result(f"❌ {str(e)}\n请继续闭关修炼。")
+            error_msg = str(e)
+            # 如果是数据异常，状态已被重置，提示用户可以重新闭关
+            if "数据异常" in error_msg:
+                yield event.plain_result(f"❌ {error_msg}\n💡 你现在可以重新发送「闭关」命令开始修炼。")
+            else:
+                yield event.plain_result(f"❌ {error_msg}")
         except Exception as e:
             yield event.plain_result(f"❌ 出关失败：{str(e)}")

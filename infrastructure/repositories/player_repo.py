@@ -58,7 +58,7 @@ class PlayerRepository(BaseRepository[Player]):
         
         return self._to_domain(results[0])
     
-    def save(self, player: Player) -> None:
+    def save(self, player: Player, force_state: bool = False) -> None:
         """
         保存玩家（创建或更新）
         
@@ -67,6 +67,7 @@ class PlayerRepository(BaseRepository[Player]):
         
         Args:
             player: 玩家对象
+            force_state: 是否强制保存状态（不进行保护），默认 False
         """
         # 先读取当前存储的状态和闭关时间（如果存在）
         existing_data = self.storage.get(self.filename, player.user_id)
@@ -79,9 +80,9 @@ class PlayerRepository(BaseRepository[Player]):
         # 转换为字典
         data = self._to_dict(player)
         
-        # 如果存在旧状态且不是 IDLE，保留旧状态和闭关时间
+        # 如果不是强制保存，且存在旧状态且不是 IDLE，保留旧状态和闭关时间
         # 这样可以避免在购买、签到等操作时意外清除探索状态和闭关时间
-        if current_state and current_state != PlayerState.IDLE.value:
+        if not force_state and current_state and current_state != PlayerState.IDLE.value:
             # 只有当新状态也是 IDLE 时才保留旧状态
             if data['state'] == PlayerState.IDLE.value:
                 data['state'] = current_state
