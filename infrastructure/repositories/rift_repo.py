@@ -96,10 +96,10 @@ class RiftRepository(BaseRepository[Rift]):
             rift_level=data["rift_level"],
             required_level=required_level,
             recommended_level=recommended_level,
-            exp_reward_min=data["exp_reward_min"],
-            exp_reward_max=data["exp_reward_max"],
-            gold_reward_min=data["gold_reward_min"],
-            gold_reward_max=data["gold_reward_max"],
+            exp_reward_min=int(data["exp_reward_min"]),
+            exp_reward_max=int(data["exp_reward_max"]),
+            gold_reward_min=int(data["gold_reward_min"]),
+            gold_reward_max=int(data["gold_reward_max"]),
             description=data.get("description", ""),
             bounty_tag=data.get("bounty_tag", "")
         )

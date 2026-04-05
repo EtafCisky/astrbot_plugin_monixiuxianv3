@@ -62,27 +62,32 @@ class PlayerRepository(BaseRepository[Player]):
         """
         保存玩家（创建或更新）
         
-        注意：为了避免覆盖玩家的探索状态（如秘境、历练等），
-        在保存前会先读取当前存储的状态并保留它。
+        注意：为了避免覆盖玩家的探索状态（如秘境、历练等）和闭关时间，
+        在保存前会先读取当前存储的状态和闭关时间并保留它们。
         
         Args:
             player: 玩家对象
         """
-        # 先读取当前存储的状态（如果存在）
+        # 先读取当前存储的状态和闭关时间（如果存在）
         existing_data = self.storage.get(self.filename, player.user_id)
         current_state = None
+        current_cultivation_start_time = None
         if existing_data:
             current_state = existing_data.get('state')
+            current_cultivation_start_time = existing_data.get('cultivation_start_time')
         
         # 转换为字典
         data = self._to_dict(player)
         
-        # 如果存在旧状态且不是 IDLE，保留旧状态
-        # 这样可以避免在购买、签到等操作时意外清除探索状态
+        # 如果存在旧状态且不是 IDLE，保留旧状态和闭关时间
+        # 这样可以避免在购买、签到等操作时意外清除探索状态和闭关时间
         if current_state and current_state != PlayerState.IDLE.value:
             # 只有当新状态也是 IDLE 时才保留旧状态
             if data['state'] == PlayerState.IDLE.value:
                 data['state'] = current_state
+                # 如果保留了状态，也要保留闭关开始时间
+                if current_cultivation_start_time:
+                    data['cultivation_start_time'] = current_cultivation_start_time
         
         self.storage.set(self.filename, player.user_id, data)
     

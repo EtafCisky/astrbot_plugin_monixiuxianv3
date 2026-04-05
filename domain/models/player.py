@@ -99,7 +99,9 @@ class Player:
             raise ValueError("当前并未闭关")
         
         if self.cultivation_start_time == 0:
-            raise ValueError("数据异常：未记录闭关开始时间")
+            # 数据异常：闭关时间丢失，重置状态让玩家可以继续游戏
+            self.state = PlayerState.IDLE
+            raise ValueError("数据异常：闭关时间丢失，已自动重置状态。抱歉给您带来不便")
         
         duration_seconds = int(time.time()) - self.cultivation_start_time
         duration_minutes = duration_seconds // 60

@@ -426,7 +426,7 @@ class RiftService:
         
         # 加权随机选择物品
         total_weight = sum(item["weight"] for item in drop_table)
-        roll = random.randint(1, total_weight)
+        roll = random.randint(1, int(total_weight))
         
         current_weight = 0
         for item in drop_table:
@@ -440,7 +440,7 @@ class RiftService:
         
         # 高级秘境有50%概率额外掉落一件
         if rift_level >= 2 and random.randint(1, 100) <= 50:
-            roll = random.randint(1, total_weight)
+            roll = random.randint(1, int(total_weight))
             current_weight = 0
             for item in drop_table:
                 current_weight += item["weight"]
@@ -474,7 +474,7 @@ class RiftService:
         
         # 加权随机选择丹药
         total_weight = sum(item["weight"] for item in pill_table)
-        roll = random.randint(1, total_weight)
+        roll = random.randint(1, int(total_weight))
         
         current_weight = 0
         for item in pill_table:
@@ -526,7 +526,7 @@ class RiftService:
         # 第一步：选择类别
         category_weights = self.RARE_DROP_CATEGORY_WEIGHTS.get(rift_level, self.RARE_DROP_CATEGORY_WEIGHTS[1])
         total_weight = sum(category_weights.values())
-        roll = random.randint(1, total_weight)
+        roll = random.randint(1, int(total_weight))
         
         current_weight = 0
         selected_category = None
@@ -547,7 +547,7 @@ class RiftService:
         
         # 加权随机选择
         total_weight = sum(item["weight"] for item in item_table)
-        roll = random.randint(1, total_weight)
+        roll = random.randint(1, int(total_weight))
         
         current_weight = 0
         for item in item_table:

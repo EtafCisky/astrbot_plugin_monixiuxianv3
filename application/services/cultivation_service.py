@@ -59,7 +59,7 @@ class CultivationService:
             
         Raises:
             InvalidStateException: 当前未闭关
-            ValueError: 闭关时间不足
+            ValueError: 闭关时间异常
         """
         # 检查状态
         if player.state != PlayerState.CULTIVATING:
@@ -68,8 +68,15 @@ class CultivationService:
                 PlayerState.CULTIVATING.value
             )
         
-        # 结束闭关，获取时长
-        duration_minutes = player.end_cultivation()
+        try:
+            # 结束闭关，获取时长
+            duration_minutes = player.end_cultivation()
+        except ValueError as e:
+            # 如果是数据异常（闭关时间丢失），保存重置后的状态
+            if "数据异常" in str(e):
+                self.player_repo.save(player)
+            # 重新抛出异常让上层处理
+            raise
         
         # 检查最小时长
         if duration_minutes < 1:
