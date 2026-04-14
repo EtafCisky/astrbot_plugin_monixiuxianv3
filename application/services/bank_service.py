@@ -265,7 +265,7 @@ class BankService:
             f"到期应还：约 {total_due:,} 灵石\n"
             f"━━━━━━━━━━━━━━━\n"
             f"当前持有：{player.gold:,} 灵石\n"
-            f"💀 逾期将被银行追杀致死！"
+            f"⚠️ 请按时还款，避免逾期"
         )
     
     def repay(self, user_id: str) -> str:
@@ -314,33 +314,35 @@ class BankService:
         )
     
     # ===== 逾期处理 =====
+    # 暂时禁用逾期追杀功能（维护超过7天导致用户登录后被追杀）
+    # TODO: 后续重新启用时需要考虑维护期间的贷款处理
     
-    def check_and_process_overdue_loans(self) -> List[dict]:
-        """检查并处理逾期贷款 - 逾期玩家将被银行追杀致死"""
-        now = int(time.time())
-        overdue_loans = self.bank_repo.get_overdue_loans(now)
-        processed = []
-        
-        for loan in overdue_loans:
-            player = self.player_repo.get_player(loan.user_id)
-            if not player:
-                # 玩家已不存在，直接标记贷款逾期
-                self.bank_repo.mark_loan_overdue(loan.id)
-                continue
-            
-            player_name = player.user_name or f"道友{player.user_id[:6]}"
-            
-            # 删除玩家数据（银行追杀致死）
-            # 注意：这里需要实现级联删除，暂时只标记贷款逾期
-            self.bank_repo.mark_loan_overdue(loan.id)
-            
-            processed.append({
-                "user_id": loan.user_id,
-                "player_name": player_name,
-                "principal": loan.principal,
-                "death": True
-            })
-            
-            logger.warning(f"玩家 {player_name} 贷款逾期被银行追杀")
-        
-        return processed
+    # def check_and_process_overdue_loans(self) -> List[dict]:
+    #     """检查并处理逾期贷款 - 逾期玩家将被银行追杀致死"""
+    #     now = int(time.time())
+    #     overdue_loans = self.bank_repo.get_overdue_loans(now)
+    #     processed = []
+    #     
+    #     for loan in overdue_loans:
+    #         player = self.player_repo.get_player(loan.user_id)
+    #         if not player:
+    #             # 玩家已不存在，直接标记贷款逾期
+    #             self.bank_repo.mark_loan_overdue(loan.id)
+    #             continue
+    #         
+    #         player_name = player.user_name or f"道友{player.user_id[:6]}"
+    #         
+    #         # 删除玩家数据（银行追杀致死）
+    #         # 注意：这里需要实现级联删除，暂时只标记贷款逾期
+    #         self.bank_repo.mark_loan_overdue(loan.id)
+    #         
+    #         processed.append({
+    #             "user_id": loan.user_id,
+    #             "player_name": player_name,
+    #             "principal": loan.principal,
+    #             "death": True
+    #         })
+    #         
+    #         logger.warning(f"玩家 {player_name} 贷款逾期被银行追杀")
+    #     
+    #     return processed
