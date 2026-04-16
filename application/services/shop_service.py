@@ -89,6 +89,31 @@ class ShopService:
         # 其他丹药归类为功能丹
         return 'utility_pill'
     
+    def _migrate_shop_items(self, items_data: List[Dict]) -> List[Dict]:
+        """
+        迁移旧的商店数据，将旧的'pill'类型转换为新的分类类型
+        
+        Args:
+            items_data: 商店物品数据列表
+            
+        Returns:
+            迁移后的物品数据列表
+        """
+        migrated = False
+        for item in items_data:
+            if item.get('type') == 'pill':
+                # 根据物品数据重新分类
+                item_data = item.get('data', {})
+                new_type = self._classify_pill_type(item_data)
+                item['type'] = new_type
+                migrated = True
+                logger.debug(f"【数据迁移】物品 {item['name']} 类型从 'pill' 迁移到 '{new_type}'")
+        
+        if migrated:
+            logger.info(f"【数据迁移】商店数据已迁移，更新了丹药分类")
+        
+        return items_data
+    
     def _get_all_sellable_items(self) -> List[Dict]:
         """获取所有可以在商店出售的物品"""
         all_items = []
@@ -321,6 +346,8 @@ class ShopService:
             last_refresh = current_time
         else:
             logger.debug(f"【商店刷新】商店 {shop_id} 无需刷新，当前有 {len(items_data)} 个商品")
+            # 迁移旧数据：将旧的'pill'类型转换为新的分类类型
+            items_data = self._migrate_shop_items(items_data)
         
         # 构建商店对象
         shop_items = [
@@ -365,6 +392,9 @@ class ShopService:
         
         for i, item in enumerate(available_items, 1):
             type_label = self.TYPE_LABEL_MAP.get(item.item_type, '物品')
+            
+            # 调试日志
+            logger.debug(f"【商店显示】物品: {item.name}, 类型: {item.item_type}, 标签: {type_label}")
             
             # 折扣标签
             discount_text = ""
@@ -426,7 +456,12 @@ class ShopService:
                 effects.append(f"气血上限+{effect_data['add_max_hp']}")
             if effect_data.get('add_spiritual_power'):
                 effects.append(f"灵力+{effect_data['add_spiritual_power']}")
-            if effect_data.get('breakthrough_rate'):
+            # 修复：使用正确的字段名 add_breakthrough_bonus
+            if effect_data.get('add_breakthrough_bonus'):
+                bonus_percent = int(effect_data['add_breakthrough_bonus'] * 100)
+                effects.append(f"突破成功率+{bonus_percent}%")
+            # 兼容旧字段名
+            elif effect_data.get('breakthrough_rate'):
                 effects.append(f"突破成功率+{effect_data['breakthrough_rate']}%")
         
         # 装备属性
