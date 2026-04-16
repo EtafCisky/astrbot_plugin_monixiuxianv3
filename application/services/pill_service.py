@@ -240,6 +240,22 @@ class PillService:
         if "add_lifespan" in effects:
             calculated["add_lifespan"] = effects["add_lifespan"]
         
+        # 增加突破加成（累积效果）
+        if "add_breakthrough_bonus" in effects:
+            calculated["add_breakthrough_bonus"] = effects["add_breakthrough_bonus"]
+        
+        # 增加灵力（临时属性）
+        if "add_spiritual_power" in effects:
+            calculated["add_spiritual_power"] = effects["add_spiritual_power"]
+        
+        # 增加精神力（临时属性）
+        if "add_mental_power" in effects:
+            calculated["add_mental_power"] = effects["add_mental_power"]
+        
+        # 增加防御力
+        if "add_defense" in effects:
+            calculated["add_defense"] = effects["add_defense"]
+        
         return calculated
     
     def _apply_accumulated_effects(
@@ -324,6 +340,30 @@ class PillService:
             else:
                 message_parts.append(f"💀 寿命减少：{lifespan_change}年")
             message_parts.append(f"⏳ 当前寿命：{player.lifespan}年")
+        
+        # 增加突破加成（累积到level_up_rate）
+        if "add_breakthrough_bonus" in total_effects:
+            breakthrough_bonus = total_effects["add_breakthrough_bonus"]
+            # 转换为百分比整数（0.1 -> 10）
+            bonus_percent = int(breakthrough_bonus * 100)
+            player.level_up_rate += bonus_percent
+            message_parts.append(f"✨ 突破加成：+{bonus_percent}%")
+            message_parts.append(f"🎯 累计突破加成：{player.level_up_rate}%")
+        
+        # 增加灵力（临时属性，可能需要其他处理）
+        if "add_spiritual_power" in total_effects:
+            spiritual_power_gain = total_effects["add_spiritual_power"]
+            message_parts.append(f"💫 灵力提升：+{spiritual_power_gain}")
+        
+        # 增加精神力（临时属性，可能需要其他处理）
+        if "add_mental_power" in total_effects:
+            mental_power_gain = total_effects["add_mental_power"]
+            message_parts.append(f"🧠 精神力提升：+{mental_power_gain}")
+        
+        # 增加防御力
+        if "add_defense" in total_effects:
+            defense_gain = total_effects["add_defense"]
+            message_parts.append(f"🛡️ 防御力提升：+{defense_gain}")
         
         return "\n".join(message_parts)
     
