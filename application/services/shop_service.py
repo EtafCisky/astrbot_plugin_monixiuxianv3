@@ -27,7 +27,7 @@ class ShopService:
         'armor': '防具',
         'main_technique': '心法',
         'technique': '功法',
-        'pill': '破境丹',
+        'breakthrough_pill': '破境丹',
         'exp_pill': '修为丹',
         'utility_pill': '功能丹',
         'material': '材料',
@@ -54,6 +54,40 @@ class ShopService:
         self.player_repo = player_repo
         self.storage_ring_repo = storage_ring_repo
         self.config_manager = config_manager
+    
+    def _classify_pill_type(self, pill_data: Dict) -> str:
+        """
+        根据丹药效果分类丹药类型
+        
+        Args:
+            pill_data: 丹药数据
+            
+        Returns:
+            丹药类型: 'breakthrough_pill'(破境丹), 'exp_pill'(修为丹), 'utility_pill'(功能丹)
+        """
+        effect = pill_data.get('effect', {})
+        
+        # 如果有突破加成效果，归类为破境丹
+        if effect.get('add_breakthrough_bonus'):
+            return 'breakthrough_pill'
+        
+        # 如果主要提供修为，归类为修为丹
+        if effect.get('add_experience', 0) > 0:
+            # 判断修为是否是主要效果（修为值较大）
+            exp_value = effect.get('add_experience', 0)
+            other_effects = sum([
+                effect.get('add_max_hp', 0),
+                effect.get('add_spiritual_power', 0),
+                effect.get('add_mental_power', 0),
+                effect.get('add_attack', 0),
+                effect.get('add_defense', 0)
+            ])
+            # 如果修为值大于其他效果总和，归类为修为丹
+            if exp_value > other_effects:
+                return 'exp_pill'
+        
+        # 其他丹药归类为功能丹
+        return 'utility_pill'
     
     def _get_all_sellable_items(self) -> List[Dict]:
         """获取所有可以在商店出售的物品"""
@@ -91,6 +125,11 @@ class ShopService:
                     item_type = item['type']
                     # 统一转换为英文类型
                     normalized_type = type_mapping.get(item_type, item_type)
+                    
+                    # 如果是丹药，根据效果细分类型
+                    if normalized_type == 'pill':
+                        normalized_type = self._classify_pill_type(item)
+                    
                     all_items.append({
                         'id': item.get('id', item['name']),
                         'name': item['name'],
@@ -498,22 +537,14 @@ class ShopService:
         # 扣除灵石
         player.gold -= total_price
         
-        # 根据物品类型处理（支持中英文类型）
+        # 根据物品类型处理
         item_type = target_item['type']
         result_lines = []
         
-        # 类型映射：中文 -> 英文
-        type_mapping = {
-            '丹药': 'pill',
-            '材料': 'material',
-            '法器': 'weapon',
-            '功法': 'technique'
-        }
+        # 物品类型已经在生成商店时被正确分类，直接使用
+        normalized_type = item_type
         
-        # 统一转换为英文类型
-        normalized_type = type_mapping.get(item_type, item_type)
-        
-        if normalized_type in ['weapon', 'armor', 'main_technique', 'technique', 'accessory', 'material', 'pill', 'exp_pill', 'utility_pill']:
+        if normalized_type in ['weapon', 'armor', 'main_technique', 'technique', 'accessory', 'material', 'breakthrough_pill', 'exp_pill', 'utility_pill']:
             # 所有物品（包括丹药）都存入储物戒
             # 直接更新player对象的storage_ring_items，避免数据覆盖问题
             if item_name in player.storage_ring_items:
