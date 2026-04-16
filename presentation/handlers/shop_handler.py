@@ -25,7 +25,7 @@ class ShopHandler:
         try:
             # 丹阁：只显示丹药
             def pill_filter(item):
-                return item['type'] in ['pill', 'exp_pill', 'utility_pill']
+                return item['type'] in ['breakthrough_pill', 'exp_pill', 'utility_pill']
             
             shop = self.shop_service.ensure_shop_refreshed(
                 shop_id="pill_pavilion",
@@ -130,7 +130,7 @@ class ShopHandler:
             # 尝试从所有商店购买
             # 先刷新所有商店，确保数据是最新的
             def pill_filter(item):
-                return item['type'] in ['pill', 'exp_pill', 'utility_pill']
+                return item['type'] in ['breakthrough_pill', 'exp_pill', 'utility_pill']
             
             def weapon_filter(item):
                 return item['type'] in ['weapon', 'armor', 'accessory']

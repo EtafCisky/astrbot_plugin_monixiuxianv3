@@ -145,10 +145,13 @@ class ShopService:
         if pills_config:
             for pill in pills_config.values():
                 if pill.get('shop_weight', 0) > 0 and pill.get('price', 0) > 0:
+                    # 根据效果分类丹药类型
+                    pill_type = self._classify_pill_type(pill)
+                    
                     all_items.append({
                         'id': pill['id'],
                         'name': pill['name'],
-                        'type': 'pill',
+                        'type': pill_type,
                         'price': pill['price'],
                         'weight': pill['shop_weight'],
                         'rank': pill.get('rank', '凡品'),
