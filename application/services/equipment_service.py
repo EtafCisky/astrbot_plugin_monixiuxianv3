@@ -216,8 +216,8 @@ class EquipmentService:
         Returns:
             槽位名称，如果无法确定则返回None
         """
-        # 武器类型
-        if equipment.type == "weapon" or (equipment.type == "法器" and equipment.subtype == "武器"):
+        # 武器类型（包括饰品）
+        if equipment.type == "weapon" or (equipment.type == "法器" and equipment.subtype in ["武器", "饰品"]):
             return "weapon"
         
         # 防具类型

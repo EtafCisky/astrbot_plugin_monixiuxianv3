@@ -328,8 +328,13 @@ class PillService:
         # 增加攻击力
         if "add_attack" in total_effects:
             attack_gain = total_effects["add_attack"]
-            player.attack += attack_gain
-            message_parts.append(f"⚔️ 攻击力：+{attack_gain}")
+            # 根据修炼类型增加对应的伤害属性
+            if player.cultivation_type.value == "灵修":
+                player.magic_damage += attack_gain
+                message_parts.append(f"⚔️ 法术伤害：+{attack_gain}")
+            else:  # 体修
+                player.physical_damage += attack_gain
+                message_parts.append(f"⚔️ 物理伤害：+{attack_gain}")
         
         # 增加/减少寿命
         if "add_lifespan" in total_effects:
@@ -363,7 +368,13 @@ class PillService:
         # 增加防御力
         if "add_defense" in total_effects:
             defense_gain = total_effects["add_defense"]
-            message_parts.append(f"🛡️ 防御力提升：+{defense_gain}")
+            # 根据修炼类型增加对应的防御属性
+            if player.cultivation_type.value == "灵修":
+                player.magic_defense += defense_gain
+                message_parts.append(f"🛡️ 法术防御：+{defense_gain}")
+            else:  # 体修
+                player.physical_defense += defense_gain
+                message_parts.append(f"🛡️ 物理防御：+{defense_gain}")
         
         return "\n".join(message_parts)
     

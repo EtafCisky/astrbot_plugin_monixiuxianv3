@@ -285,6 +285,22 @@ class BreakthroughService:
                     # 如果是字典，遍历所有值
                     for pill_data in pills_config.values():
                         if isinstance(pill_data, dict) and pill_data.get("name") == pill_name and pill_data.get("subtype") == "breakthrough":
+                            # 检查境界要求
+                            required_level = pill_data.get("required_level_index", 0)
+                            target_level = pill_data.get("target_level_index", 0)
+                            
+                            # 验证玩家当前境界是否符合丹药使用条件
+                            if player.level_index < required_level:
+                                current_level_name = level_data[player.level_index].get("name", level_data[player.level_index].get("level_name", "未知"))
+                                required_level_name = level_data[required_level].get("name", level_data[required_level].get("level_name", "未知"))
+                                raise ValueError(f"【{pill_name}】需要达到【{required_level_name}】才能使用（当前：{current_level_name}）")
+                            
+                            # 验证玩家是否在正确的突破阶段使用此丹药
+                            if target_level != next_level_index:
+                                target_level_name = level_data[target_level].get("name", level_data[target_level].get("level_name", "未知"))
+                                next_level_name = level_data[next_level_index].get("name", level_data[next_level_index].get("level_name", "未知"))
+                                raise ValueError(f"【{pill_name}】只能用于突破至【{target_level_name}】，无法用于突破至【{next_level_name}】")
+                            
                             pill_bonus = pill_data.get("breakthrough_bonus", 0)
                             pill_max_rate = pill_data.get("max_success_rate", 1.0)
                             
@@ -301,6 +317,22 @@ class BreakthroughService:
                     # 如果是列表，直接遍历
                     for pill_data in pills_config:
                         if pill_data.get("name") == pill_name and pill_data.get("subtype") == "breakthrough":
+                            # 检查境界要求
+                            required_level = pill_data.get("required_level_index", 0)
+                            target_level = pill_data.get("target_level_index", 0)
+                            
+                            # 验证玩家当前境界是否符合丹药使用条件
+                            if player.level_index < required_level:
+                                current_level_name = level_data[player.level_index].get("name", level_data[player.level_index].get("level_name", "未知"))
+                                required_level_name = level_data[required_level].get("name", level_data[required_level].get("level_name", "未知"))
+                                raise ValueError(f"【{pill_name}】需要达到【{required_level_name}】才能使用（当前：{current_level_name}）")
+                            
+                            # 验证玩家是否在正确的突破阶段使用此丹药
+                            if target_level != next_level_index:
+                                target_level_name = level_data[target_level].get("name", level_data[target_level].get("level_name", "未知"))
+                                next_level_name = level_data[next_level_index].get("name", level_data[next_level_index].get("level_name", "未知"))
+                                raise ValueError(f"【{pill_name}】只能用于突破至【{target_level_name}】，无法用于突破至【{next_level_name}】")
+                            
                             pill_bonus = pill_data.get("breakthrough_bonus", 0)
                             pill_max_rate = pill_data.get("max_success_rate", 1.0)
                             
